@@ -25,7 +25,14 @@ void DoPost();
 int main(int argc, char** argv)
 {
 	std::cout << "Content-type: text/html" << std::endl << std::endl;
-	std::cout << "<html><head><title>CGI</title></head><body>";
+	std::cout << "<!DOCTYPE html>";
+	std::cout << "<html><head><title>CGI</title>";
+	std::cout << "<meta name=\"display\" content=\"width=device-width, initial-scale=1.0\">";
+	std::cout << "<meta name=\"author\" content=\"Jacob Buysse\">";
+	std::cout << "<meta name=\"description\" content=\"Sheepshead Scores\">";
+	std::cout << "<link href=\"//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css\" rel=\"stylesheet\">";
+	std::cout << "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css\" rel=\"stylesheet\">";
+	std::cout << "</head><body>";
 	
 	switch (GetRequestMethod())
 	{
@@ -42,6 +49,9 @@ int main(int argc, char** argv)
 		break;
 	}
 	
+	std::cout << "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>";
+	std::cout << "<script src=\"//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js\"></script>";
+	std::cout << "<script src=\"//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js\"></script>";
 	std::cout << "</body></html>";
 	return 0;
 }
