@@ -16,7 +16,7 @@ int HexValue(char digit)
 	return 0;
 }
 
-int DecodeHexCharacter(std::string::const_iterator& iter, std::string::const_iterator end)
+char DecodeHexCharacter(std::string::const_iterator& iter, std::string::const_iterator end)
 {
 	if (iter == end)
 		return ' ';
@@ -37,6 +37,10 @@ std::string UrlDecode(const std::string& value)
 		{
 			++iter;
 			out << DecodeHexCharacter(iter, value.end());
+		}
+		else if (*iter == '+')
+		{
+			out << ' ';
 		}
 		else
 		{
