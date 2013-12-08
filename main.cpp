@@ -1,100 +1,92 @@
-#include "QueryString.h"
-#include "PostData.h"
+#include "HttpRequest.h"
+#include "HttpResponse.h"
 #include "HtmlUtility.h"
 #include <iostream>
+#include <sstream>
 
-#include <cstring>
-
-enum class HttpRequestMethod { Get, Post, Other };
-
-HttpRequestMethod GetRequestMethod()
+std::string GenerateHtmlPage(const std::string& body)
 {
-	auto value = std::getenv("REQUEST_METHOD");
-	if (value == nullptr)
-		return HttpRequestMethod::Other;
-	if (std::strcmp(value, "GET") == 0)
-		return HttpRequestMethod::Get;
-	if (std::strcmp(value, "POST") == 0)
-		return HttpRequestMethod::Post;
-	return HttpRequestMethod::Other;
+	std::ostringstream out;
+	out << "<!DOCTYPE html>";
+	out << "<html lang=\"en\"><head><title>CGI</title>";
+	out << "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">";
+	out << "<meta name=\"author\" content=\"Jacob Buysse\">";
+	out << "<meta name=\"description\" content=\"Sheepshead Scores\">";
+	out << "<link href=\"//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css\" rel=\"stylesheet\">";
+	out << "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css\" rel=\"stylesheet\">";
+	out << "</head><body>";
+	out << body;
+	out << "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>";
+	out << "<script src=\"//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js\"></script>";
+	out << "<script src=\"//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js\"></script>";
+	out << "</body></html>";
+	return out.str();
 }
 
-void DoGet();
-void DoPost();
+HttpResponse DoGet(const HttpRequest& request)
+{
+	std::ostringstream out;
+	out << "<div class=\"container\">";
+	out << "<div class=\"jumbotron\">";
+	out << "<h1>Sheepshead Scores</h1>";
+	out << "<p>Enter today's Sheepshead scores and get daily, MTD, and YTD totals.</p>";
+	
+	out << "<form class=\"form-horizontal\" role=\"form\" action=\"" << request.GetScriptName() << "\" method=\"post\">"
+		<< "<div class=\"form-group\">"
+		<< "<div class=\"col-sm-3\">"
+		<< "<input type=\"text\" class=\"form-control\" name=\"player1Name\" placeholder=\"Name\">"
+		<< "</div>"
+		<< "<div class=\"col-sm-2\">"
+		<< "<input type=\"number\" class=\"form-control\" name=\"player1Score\" placeholder=\"Score\">"
+		<< "</div>"
+		<< "</div>"
+		
+		<< "<div class=\"form-group\">"
+		<< "<div class=\"col-sm-3\">"
+		<< "<button type=\"submit\" class=\"btn btn-default btn-primary\">Submit</button>"
+		<< "</div>"
+		<< "</div>"
+		<< "</form>";
+		
+	out << "</div>";
+	out << "</div>";
+	
+	return { "text/html", GenerateHtmlPage(out.str()) };
+}
+
+HttpResponse DoPost(const HttpRequest& request)
+{
+	std::ostringstream out;
+	out << "<h1>Form Post Parameters</h1>";
+	
+	for (auto queryParameter : request.GetPostData())
+	{
+		out << "<p>" << Html::EscapeHtml(queryParameter.first) << " = { ";
+		for (auto value : queryParameter.second)
+			out << "'" << Html::EscapeHtml(value) << "', ";
+		out << "}</p>";
+	}
+	
+	return { "text/html", GenerateHtmlPage(out.str()) };
+}
+
+HttpResponse DispatchRequest(const HttpRequest& request)
+{
+	switch (request.GetRequestMethod())
+	{
+	case HttpRequestMethod::Get:
+		return DoGet(request);
+		
+	case HttpRequestMethod::Post:
+		return DoPost(request);
+	}
+	return { "text/html", GenerateHtmlPage("<p>HTTP request method not supported.</p>") };
+}
 
 int main(int argc, char** argv)
 {
-	std::cout << "Content-type: text/html" << std::endl << std::endl;
-	std::cout << "<!DOCTYPE html>";
-	std::cout << "<html><head><title>CGI</title>";
-	std::cout << "<meta name=\"display\" content=\"width=device-width, initial-scale=1.0\">";
-	std::cout << "<meta name=\"author\" content=\"Jacob Buysse\">";
-	std::cout << "<meta name=\"description\" content=\"Sheepshead Scores\">";
-	std::cout << "<link href=\"//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css\" rel=\"stylesheet\">";
-	std::cout << "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css\" rel=\"stylesheet\">";
-	std::cout << "</head><body>";
-	
-	switch (GetRequestMethod())
-	{
-	case HttpRequestMethod::Get:
-		DoGet();
-		break;
-		
-	case HttpRequestMethod::Post:
-		DoPost();
-		break;
-	
-	default:
-		std::cout << "<p>HTTP request method not supported.</p>";
-		break;
-	}
-	
-	std::cout << "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>";
-	std::cout << "<script src=\"//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js\"></script>";
-	std::cout << "<script src=\"//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js\"></script>";
-	std::cout << "</body></html>";
+	HttpRequest request;
+	std::cout << DispatchRequest(request);
 	return 0;
-}
-
-std::string GetScriptName()
-{
-	auto value = std::getenv("SCRIPT_NAME");
-	return value == nullptr ? "" : value;
-}
-
-void DoGet()
-{
-	std::cout << "<h1>Post Sheepshead Scores</h1>";
-	
-	std::cout << "<form action=\"" << GetScriptName() << "\" method=\"post\">"
-		<< "Name: <input type=\"text\" name=\"name\">"
-		<< "Score: <input type=\"text\" name=\"score\">"
-		<< "<button type=\"submit\">Submit</button>"
-		<< "</form>";
-
-	std::cout << "<h1>Query String Parameters</h1>";
-	
-	QueryString queryString;
-	for (auto queryParameter : queryString)
-	{
-		std::cout << "<p>" << Html::EscapeHtml(queryParameter.first) << " = { ";
-		for (auto value : queryParameter.second)
-			std::cout << "'" << Html::EscapeHtml(value) << "', ";
-		std::cout << "}</p>";
-	}
-}
-
-void DoPost()
-{
-	std::cout << "<h1>Form Post Parameters</h1>";
-	
-	PostData postData;
-	for (auto queryParameter : postData)
-	{
-		std::cout << "<p>" << Html::EscapeHtml(queryParameter.first) << " = { ";
-		for (auto value : queryParameter.second)
-			std::cout << "'" << Html::EscapeHtml(value) << "', ";
-		std::cout << "}</p>";
-	}
 }
 
