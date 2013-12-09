@@ -1,4 +1,4 @@
-angular.module('sheepsheadApp', []).controller('SheepsheadScoreCtrl', function ($scope) {
+angular.module('sheepsheadApp', []).controller('SheepsheadScoreCtrl', function ($scope, $http) {
 	$scope.player1Name = '';
 	$scope.player1Score = 0;
 	$scope.player2Name = '';

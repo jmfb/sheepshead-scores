@@ -27,6 +27,9 @@ const std::string& HttpResponse::GetContent() const
 
 std::ostream& operator<<(std::ostream& out, const HttpResponse& response)
 {
-	return out << "Content-type: " << response.GetContentType() << std::endl << std::endl << response.GetContent();
+	return out << "Content-type: " << response.GetContentType() << std::endl
+		<< "Content-length: " << response.GetContent().size() << std::endl
+		<< std::endl
+		<< response.GetContent();
 }
 
