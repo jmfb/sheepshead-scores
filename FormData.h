@@ -17,6 +17,7 @@ public:
 	FormData& operator=(const FormData& rhs) = default;
 	
 	const ValueType& operator[](const std::string& key) const;
+	const std::string& operator()(const std::string& key) const;
 	
 	IteratorType begin() const;
 	IteratorType end() const;

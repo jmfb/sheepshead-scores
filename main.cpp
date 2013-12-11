@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <pqxx/pqxx>
+#include <ctime>
 
 //sudo -u postgres createuser "www-data"
 //sudo apt-get install libpqxx-3.1
@@ -118,19 +119,97 @@ HttpResponse DoGet(const HttpRequest& request)
 	return { "text/html", GenerateHtmlPage("Sheepshead Scores", out.str()) };
 }
 
+std::string ReportScoresSince(pqxx::work& transaction, const char* since, const char* title)
+{
+	auto result = transaction.exec("select player.name, sum(gamePlayer.score) from game inner join gamePlayer on gamePlayer.gameId = game.id inner join player on player.id = gamePlayer.playerId where game.playedWhen >= " + transaction.quote(since) + " group by player.name order by 2 desc;");
+	std::ostringstream out;
+	out << "<div class=\"well\">"
+		<< "<h1>" << Html::EscapeHtml(title) << "</h1>"
+		<< "<table class=\"table table-striped\">"
+		<< "<thead><tr><th>Player</th><th>Score</th></tr></thead>"
+		<< "<tbody>";
+	auto pointSpread = 0;
+	for (auto row : result)
+	{
+		auto score = row[1].as<int>();
+		if (score > 0)
+			pointSpread += score;
+		out << "<tr><td>" << Html::EscapeHtml(row[0].as<std::string>()) << "</td>"
+			<< "<td>" << score << "</td></tr>";
+	}
+		
+	out << "</tbody>"
+		<< "<tfoot><tr class=\"success\"><td>P.S.</td><td>" << pointSpread << "</td></tr></tfoot>"
+		<< "</table>"
+		<< "</div>";
+		
+	return out.str();
+}
+
 HttpResponse DoPost(const HttpRequest& request)
 {
-	std::ostringstream out;
-	out << "<h1>Form Post Parameters</h1>";
+	pqxx::connection connection("dbname=sheepshead");
+	pqxx::work transaction(connection);
 	
-	for (auto queryParameter : request.GetPostData())
+	auto time = std::time(nullptr);
+	char today[11];
+	char beginningOfMonth[11];
+	char beginningOfYear[11];
+	std::strftime(today, sizeof(today), "%Y-%m-%d", std::localtime(&time));
+	std::strftime(beginningOfMonth, sizeof(beginningOfMonth), "%Y-%m-01", std::localtime(&time));
+	std::strftime(beginningOfYear, sizeof(beginningOfYear), "%Y-01-01", std::localtime(&time));
+	
+	auto result = transaction.exec("select id from game where playedwhen = " + transaction.quote(today) + ";");
+	if (result.empty())
+		result = transaction.exec("insert into game (playedwhen) values (" + transaction.quote(today) + ") returning id;");
+	
+	auto gameId = result[0][0].as<int>();
+
+	std::ostringstream out;
+	out << "<div class=\"row\"><div class=\"col-md-offset-2 col-md-8\">";
+	out << "<div class=\"well\">";
+	out << "<h1>New Scores for " << today << ".</h1>";
+	out << "<table class=\"table table-striped\">"
+		<< "<thead><tr><th>Player</th><th>Score</th></tr></thead>"
+		<< "<tbody>";
+	
+	auto pointSpread = 0;
+	for (auto number = 1; number <= 6; ++number)
 	{
-		out << "<p>" << Html::EscapeHtml(queryParameter.first) << " = { ";
-		for (auto value : queryParameter
-	.second)
-			out << "'" << Html::EscapeHtml(value) << "', ";
-		out << "}</p>";
+		auto name = request.GetPostData()("player" + std::to_string(number) + "Name");
+		if (name.empty())
+			continue;
+		
+		result = transaction.exec("select id from player where name = " + transaction.quote(name) + ";");
+		if (result.empty())
+			result = transaction.exec("insert into player (name) values (" + transaction.quote(name) + ") returning id;");
+			
+		auto playerId = result[0][0].as<int>();
+		
+		auto score = std::stoi(request.GetPostData()("player" + std::to_string(number) + "Score"));
+		if (score > 0)
+			pointSpread += score;
+		out << "<tr><td>" << Html::EscapeHtml(name) << "</td><td>" << score << "</td></tr>";
+		
+		result = transaction.exec("select score from gamePlayer where gameId = " + transaction.quote(gameId) + " and playerId = " + transaction.quote(playerId) + ";");
+		if (result.empty())
+			transaction.exec("insert into gamePlayer (gameId, playerId, score) values (" + transaction.quote(gameId) + ", " + transaction.quote(playerId) + ", " + transaction.quote(score) + ");");
+		else
+			transaction.exec("update gamePlayer set score = " + transaction.quote(score + result[0][0].as<int>()) + " where gameId = " + transaction.quote(gameId) + " and playerId = " + transaction.quote(playerId) + ";");
 	}
+	
+	out << "</tbody>"
+		<< "<tfoot><tr class=\"success\"><td>P.S.</td><td>" << pointSpread << "</td></tr></tfoot>"
+		<< "</table>"
+		<< "</div>";
+	
+	out << ReportScoresSince(transaction, beginningOfMonth, "MTD Totals");
+	out << ReportScoresSince(transaction, beginningOfYear, "YTD Totals");
+
+	out << "</div></div>";
+		
+	transaction.commit();
+	
 	return { "text/html", GenerateHtmlPage("Sheepshead Results", out.str()) };
 }
 

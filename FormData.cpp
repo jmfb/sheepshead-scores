@@ -25,6 +25,13 @@ const FormData::ValueType& FormData::operator[](const std::string& key) const
 	return iter == values.end() ? missingValue : iter->second;
 }
 
+const std::string& FormData::operator()(const std::string& key) const
+{
+	static const std::string missingValue;
+	auto& value = operator[](key);
+	return value.empty() ? missingValue : value[0];
+}
+
 FormData::IteratorType FormData::begin() const
 {
 	return values.begin();
