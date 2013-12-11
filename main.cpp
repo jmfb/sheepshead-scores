@@ -131,3 +131,23 @@ int main(int argc, char** argv)
 	return 0;
 }
 
+//sudo apt-get install libpqxx-3.1
+//sudo apt-get install libpqxx3-dev
+//g++ -std=c++0x *.cpp -lpqxx -lpq -o test
+/*
+#include <pqxx/pqxx>
+
+void foo()
+{
+	pqxx::connection connection("dbname=sheepshead");
+	if (connection.is_open())
+	{
+		std::cout << "success" << std::endl;	
+	}
+	else
+	{
+		std::cout << "could not connect." << std::endl;
+	}
+}
+*/
+
