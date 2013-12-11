@@ -150,7 +150,7 @@ HttpResponse DispatchRequest(const HttpRequest& request)
 	}
 	catch (const std::exception& exception)
 	{
-		return { "text/html", GenerateHtmlPage("Error", "<p>" + Html::EscapeHtml(exception.what()) + "</p>") };
+		return { "text/html", GenerateHtmlPage("Error", "<pre>" + String::Replace(Html::EscapeHtml(exception.what()), "\n", "<br/>") + "</pre>"), 500 };
 	}
 }
 
