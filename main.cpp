@@ -1,8 +1,23 @@
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "HtmlUtility.h"
+#include "StringUtility.h"
 #include <iostream>
 #include <sstream>
+#include <pqxx/pqxx>
+
+//sudo -u postgres createuser "www-data"
+//sudo apt-get install libpqxx-3.1
+//sudo apt-get install libpqxx3-dev
+
+namespace Json
+{
+	std::string EscapeJson(const std::string& value)
+	{
+		return String::Replace(value, "\"", "\\\"");
+	}
+}
+
 
 std::string GenerateHtmlPage(const std::string& title, const std::string& body)
 {
@@ -55,12 +70,20 @@ HttpResponse DoNameLookup(const HttpRequest& request)
 {
 	auto values = request.GetQueryString()["query"];
 	auto query = values.empty() ? "" : values[0];
+
+	pqxx::connection connection("dbname=sheepshead");
+	pqxx::work transaction(connection);
+	auto result = transaction.exec("select name from player where name like " + transaction.quote("%" + query + "%") + " order by name limit 5;");	
+
 	std::ostringstream out;
-	out << "{ \"names\": [ ";
-	out << "\"" << query << 0 << "\"";
-	for (auto index = 1; index < 5; ++index)
-		out << ", \"" << query << index << "\"";
-	out << " ] }";
+	out << "{\"names\":[";
+	for (auto iter = result.begin(); iter != result.end(); ++iter)
+	{
+		if (iter != result.begin())
+			out << ",";
+		out << "\"" << Json::EscapeJson((*iter)[0].as<std::string>()) << "\"";
+	}
+	out << "]}";
 	return { "application/json", out.str() };
 }
 
@@ -103,25 +126,32 @@ HttpResponse DoPost(const HttpRequest& request)
 	for (auto queryParameter : request.GetPostData())
 	{
 		out << "<p>" << Html::EscapeHtml(queryParameter.first) << " = { ";
-		for (auto value : queryParameter.second)
+		for (auto value : queryParameter
+	.second)
 			out << "'" << Html::EscapeHtml(value) << "', ";
 		out << "}</p>";
 	}
-	
 	return { "text/html", GenerateHtmlPage("Sheepshead Results", out.str()) };
 }
 
 HttpResponse DispatchRequest(const HttpRequest& request)
 {
-	switch (request.GetRequestMethod())
+	try
 	{
-	case HttpRequestMethod::Get:
-		return DoGet(request);
+		switch (request.GetRequestMethod())
+		{
+		case HttpRequestMethod::Get:
+			return DoGet(request);
 		
-	case HttpRequestMethod::Post:
-		return DoPost(request);
+		case HttpRequestMethod::Post:
+			return DoPost(request);
+		}
+		return { "text/html", GenerateHtmlPage("Error", "<p>HTTP request method not supported.</p>") };
 	}
-	return { "text/html", GenerateHtmlPage("Error", "<p>HTTP request method not supported.</p>") };
+	catch (const std::exception& exception)
+	{
+		return { "text/html", GenerateHtmlPage("Error", "<p>" + Html::EscapeHtml(exception.what()) + "</p>") };
+	}
 }
 
 int main(int argc, char** argv)
@@ -130,34 +160,4 @@ int main(int argc, char** argv)
 	std::cout << DispatchRequest(request);
 	return 0;
 }
-
-//sudo apt-get install libpqxx-3.1
-//sudo apt-get install libpqxx3-dev
-//g++ -std=c++0x *.cpp -lpqxx -lpq -o test
-/*
-#include <pqxx/pqxx>
-
-void foo(const std::string& name)
-{
-	try
-	{
-		pqxx::connection connection("dbname=sheepshead");
-		if (!connection.is_open())
-			throw std::runtime_error("could not connect to database");
-		pqxx::work transaction(connection);
-		auto result = transaction.exec("select id from player where name = " + transaction.quote(name) + ";");
-		if (result.empty())
-			result = transaction.exec("insert into player (name) values (" + transaction.quote(name) + ") returning id;");
-		auto playerId = result[0][0].as<int>();
-		
-		std::cout << name << " is player id " << playerId << std::endl;
-		
-		transaction.commit();
-	}
-	catch (const std::exception& exception)
-	{
-		std::cout << "error: " << exception.what() << std::endl;
-	}
-}
-*/
 
