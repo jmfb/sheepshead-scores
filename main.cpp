@@ -137,16 +137,26 @@ int main(int argc, char** argv)
 /*
 #include <pqxx/pqxx>
 
-void foo()
+void foo(const std::string& name)
 {
-	pqxx::connection connection("dbname=sheepshead");
-	if (connection.is_open())
+	try
 	{
-		std::cout << "success" << std::endl;	
+		pqxx::connection connection("dbname=sheepshead");
+		if (!connection.is_open())
+			throw std::runtime_error("could not connect to database");
+		pqxx::work transaction(connection);
+		auto result = transaction.exec("select id from player where name = " + transaction.quote(name) + ";");
+		if (result.empty())
+			result = transaction.exec("insert into player (name) values (" + transaction.quote(name) + ") returning id;");
+		auto playerId = result[0][0].as<int>();
+		
+		std::cout << name << " is player id " << playerId << std::endl;
+		
+		transaction.commit();
 	}
-	else
+	catch (const std::exception& exception)
 	{
-		std::cout << "could not connect." << std::endl;
+		std::cout << "error: " << exception.what() << std::endl;
 	}
 }
 */
