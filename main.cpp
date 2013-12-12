@@ -2,6 +2,9 @@
 #include "HttpResponse.h"
 #include "HtmlUtility.h"
 #include "StringUtility.h"
+#include "JsonUtility.h"
+#include "DateUtility.h"
+#include "PlayerScore.h"
 #include <iostream>
 #include <sstream>
 #include <pqxx/pqxx>
@@ -10,15 +13,6 @@
 //sudo -u postgres createuser "www-data"
 //sudo apt-get install libpqxx-3.1
 //sudo apt-get install libpqxx3-dev
-
-namespace Json
-{
-	std::string EscapeJson(const std::string& value)
-	{
-		return String::Replace(value, "\"", "\\\"");
-	}
-}
-
 
 std::string GenerateHtmlPage(const std::string& title, const std::string& body)
 {
@@ -74,7 +68,7 @@ HttpResponse DoNameLookup(const HttpRequest& request)
 
 	pqxx::connection connection("dbname=sheepshead");
 	pqxx::work transaction(connection);
-	auto result = transaction.exec("select name from player where name like " + transaction.quote("%" + query + "%") + " order by name limit 5;");	
+	auto result = transaction.exec("select name from player where name like " + transaction.quote("%" + query + "%") + " order by name limit 5;");
 
 	std::ostringstream out;
 	out << "{\"names\":[";
@@ -119,9 +113,9 @@ HttpResponse DoGet(const HttpRequest& request)
 	return { "text/html", GenerateHtmlPage("Sheepshead Scores", out.str()) };
 }
 
-std::string ReportScoresSince(pqxx::work& transaction, const char* since, const char* title)
+std::string ReportScoresSince(pqxx::work& transaction, const std::string& since, const char* title)
 {
-	auto result = transaction.exec("select player.name, sum(gamePlayer.score) from game inner join gamePlayer on gamePlayer.gameId = game.id inner join player on player.id = gamePlayer.playerId where game.playedWhen >= " + transaction.quote(since) + " group by player.name order by 2 desc;");
+	auto results = transaction.exec("select player.name, sum(gamePlayer.score) from game inner join gamePlayer on gamePlayer.gameId = game.id inner join player on player.id = gamePlayer.playerId where game.playedWhen >= " + transaction.quote(since) + " group by player.name order by 2 desc;");
 	std::ostringstream out;
 	out << "<div class=\"well\">"
 		<< "<h1>" << Html::EscapeHtml(title) << "</h1>"
@@ -129,12 +123,14 @@ std::string ReportScoresSince(pqxx::work& transaction, const char* since, const 
 		<< "<thead><tr><th>Player</th><th>Score</th></tr></thead>"
 		<< "<tbody>";
 	auto pointSpread = 0;
-	for (auto row : result)
+	auto playerScores = PlayerScore::LoadAll(results, 0, 1);
+	
+	for (auto playerScore : playerScores)
 	{
-		auto score = row[1].as<int>();
+		auto score = playerScore.GetScore();
 		if (score > 0)
 			pointSpread += score;
-		out << "<tr><td>" << Html::EscapeHtml(row[0].as<std::string>()) << "</td>"
+		out << "<tr><td>" << Html::EscapeHtml(playerScore.GetName()) << "</td>"
 			<< "<td>" << score << "</td></tr>";
 	}
 		
@@ -142,7 +138,7 @@ std::string ReportScoresSince(pqxx::work& transaction, const char* since, const 
 		<< "<tfoot><tr class=\"success\"><td>P.S.</td><td>" << pointSpread << "</td></tr></tfoot>"
 		<< "</table>"
 		<< "</div>";
-		
+
 	return out.str();
 }
 
@@ -150,15 +146,8 @@ HttpResponse DoPost(const HttpRequest& request)
 {
 	pqxx::connection connection("dbname=sheepshead");
 	pqxx::work transaction(connection);
-	
-	auto time = std::time(nullptr);
-	char today[11];
-	char beginningOfMonth[11];
-	char beginningOfYear[11];
-	std::strftime(today, sizeof(today), "%Y-%m-%d", std::localtime(&time));
-	std::strftime(beginningOfMonth, sizeof(beginningOfMonth), "%Y-%m-01", std::localtime(&time));
-	std::strftime(beginningOfYear, sizeof(beginningOfYear), "%Y-01-01", std::localtime(&time));
-	
+
+	auto today = Date::GetToday();
 	auto result = transaction.exec("select id from game where playedwhen = " + transaction.quote(today) + ";");
 	if (result.empty())
 		result = transaction.exec("insert into game (playedwhen) values (" + transaction.quote(today) + ") returning id;");
@@ -174,19 +163,17 @@ HttpResponse DoPost(const HttpRequest& request)
 		<< "<tbody>";
 	
 	auto pointSpread = 0;
-	for (auto number = 1; number <= 6; ++number)
+	auto playerScores = PlayerScore::LoadAll(request.GetPostData());
+	for (auto playerScore : playerScores)
 	{
-		auto name = request.GetPostData()("player" + std::to_string(number) + "Name");
-		if (name.empty())
-			continue;
-		
+		auto name = playerScore.GetName();
 		result = transaction.exec("select id from player where name = " + transaction.quote(name) + ";");
 		if (result.empty())
 			result = transaction.exec("insert into player (name) values (" + transaction.quote(name) + ") returning id;");
 			
 		auto playerId = result[0][0].as<int>();
 		
-		auto score = std::stoi(request.GetPostData()("player" + std::to_string(number) + "Score"));
+		auto score = playerScore.GetScore();
 		if (score > 0)
 			pointSpread += score;
 		out << "<tr><td>" << Html::EscapeHtml(name) << "</td><td>" << score << "</td></tr>";
@@ -203,8 +190,8 @@ HttpResponse DoPost(const HttpRequest& request)
 		<< "</table>"
 		<< "</div>";
 	
-	out << ReportScoresSince(transaction, beginningOfMonth, "MTD Totals");
-	out << ReportScoresSince(transaction, beginningOfYear, "YTD Totals");
+	out << ReportScoresSince(transaction, Date::GetBeginningOfMonth(), "MTD Totals");
+	out << ReportScoresSince(transaction, Date::GetBeginningOfYear(), "YTD Totals");
 
 	out << "</div></div>";
 		
