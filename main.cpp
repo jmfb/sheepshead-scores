@@ -4,7 +4,7 @@
 #include "StringUtility.h"
 #include "JsonUtility.h"
 #include "DateUtility.h"
-#include "PlayerScore.h"
+#include "PlayerScoreModel.h"
 #include <iostream>
 #include <sstream>
 #include <pqxx/pqxx>
@@ -123,7 +123,7 @@ std::string ReportScoresSince(pqxx::work& transaction, const std::string& since,
 		<< "<thead><tr><th>Player</th><th>Score</th></tr></thead>"
 		<< "<tbody>";
 	auto pointSpread = 0;
-	auto playerScores = PlayerScore::LoadAll(results, 0, 1);
+	auto playerScores = PlayerScoreModel::LoadAll(results, 0, 1);
 	
 	for (auto playerScore : playerScores)
 	{
@@ -163,7 +163,7 @@ HttpResponse DoPost(const HttpRequest& request)
 		<< "<tbody>";
 	
 	auto pointSpread = 0;
-	auto playerScores = PlayerScore::LoadAll(request.GetPostData());
+	auto playerScores = PlayerScoreModel::LoadAll(request.GetPostData());
 	for (auto playerScore : playerScores)
 	{
 		auto name = playerScore.GetName();
