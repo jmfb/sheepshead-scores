@@ -3,8 +3,7 @@
 @section Title { Error }
 @section Body {
 	<pre>
-	@for (auto errorLine : model.GetErrorLines())
-	{
+	@for (auto errorLine : model.GetErrorLines()) {
 		@write error;<br/>
 	}
 	</pre>
