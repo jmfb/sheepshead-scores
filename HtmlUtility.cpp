@@ -59,5 +59,10 @@ std::string EscapeHtml(const std::string& value)
 	return html;	
 }
 
+std::string EscapeHtml(int value)
+{
+	return std::to_string(value);
+}
+
 }
 

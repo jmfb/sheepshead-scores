@@ -11,6 +11,7 @@ public:
 	LayoutView& operator=(const LayoutView& rhs) = delete;
 
 	virtual void RenderBody_Layout();
+	virtual void RenderSection_Layout_Title();
 	virtual void RenderBody();
 
 };

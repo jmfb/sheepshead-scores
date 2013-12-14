@@ -13,7 +13,6 @@ public:
 
 	virtual void RenderBody_Error();
 	virtual void RenderBody_Layout();
-	virtual void RenderSection_Layout_Body();
 	virtual void RenderSection_Layout_Title();
 
 	void SetModel(const ErrorLinesModel& value);

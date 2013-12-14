@@ -1,11 +1,9 @@
 @layout Layout;
 @model ErrorLinesModel;
 @section Title { Error }
-@section Body {
-	<pre>
-	@for (auto errorLine : model.GetErrorLines()) {
-		@write error;<br/>
-	}
-	</pre>
+<pre>
+@for (auto errorLine : model.GetErrorLines()) {
+	@write errorLine;<br/>
 }
+</pre>
 

@@ -1,33 +1,31 @@
 @layout Layout;
 @model ReportsModel;
 @section Title { Sheepshead Scores }
-@section Body {
-	@for (auto report : model.GetReports()) {
-		<div class="well">
-			<h1>@write report.GetTitle();</h1>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Player</th>
-						<th>Score</th>
-					</tr>
-				</thead>
-				<tbody>
-				@for (auto playerScore : report.GetPlayerScores()) {
-					<tr>
-						<td>@write playerScore.GetName();</td>
-						<td>@write playerScore.GetScore();</td>
-					</tr>
-				}
-				</tbody>
-				<tfoot>
-					<tr class="success">
-						<td>P.S.</td>
-						<td>@write report.GetPointSpread();</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	}
+@for (auto report : model.GetReports()) {
+	<div class="well">
+		<h1>@write report.GetTitle();</h1>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Player</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody>
+			@for (auto playerScore : report.GetPlayerScores()) {
+				<tr>
+					<td>@write playerScore.GetName();</td>
+					<td>@write playerScore.GetScore();</td>
+				</tr>
+			}
+			</tbody>
+			<tfoot>
+				<tr class="success">
+					<td>P.S.</td>
+					<td>@write report.GetPointSpread();</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 }
 

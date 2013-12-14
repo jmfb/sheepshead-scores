@@ -52,7 +52,8 @@ std::vector<PlayerScoreModel> PlayerScoreModel::LoadAll(pqxx::result& results, i
 std::vector<PlayerScoreModel> PlayerScoreModel::LoadAll(const FormData& formData)
 {
 	std::vector<PlayerScoreModel> playerScores;
-	for (auto number = 1; number <= 6; ++number)
+	auto playerCount = std::stoi(formData("playerCount"));
+	for (auto number = 0; number < playerCount; ++number)
 	{
 		auto playerScore = Load(formData, number);
 		if (!playerScore.GetName().empty())

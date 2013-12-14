@@ -1,4 +1,5 @@
 #pragma once
+#include "HttpResponse.h"
 #include <string>
 #include <sstream>
 
@@ -22,17 +23,17 @@ private:
 };
 
 template <typename TView>
-inline std::string RenderView()
+inline HttpResponse View(int statusCode = 0)
 {
 	TView view;
-	return view.Render();
+	return { "text/html", view.Render(), statusCode };
 }
 
 template <typename TView, typename TModel>
-inline std::string RenderView(const TModel& model)
+inline HttpResponse View(const TModel& model, int statusCode = 0)
 {
 	TView view;
 	view.SetModel(model);
-	return view.Render();
+	return { "text/html", view.Render(), statusCode };
 }
 

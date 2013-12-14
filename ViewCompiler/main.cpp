@@ -30,7 +30,7 @@ public:
 	
 	void AddBodyLine(const std::string& line)
 	{
-		auto openBraceCount = 0;
+		auto openBraceCount = 2;
 		ParseLine(line, body, openBraceCount);
 	}
 	
@@ -84,6 +84,7 @@ public:
 	{
 		std::ofstream out(name + "View.cpp");
 		out << "#include \"" << name << "View.h\"" << std::endl
+			<< "#include \"HtmlUtility.h\"" << std::endl
 			<< std::endl;
 			
 		out << "void " << name << "View::RenderBody_" << name << "()" << std::endl
@@ -114,32 +115,146 @@ public:
 			out << "}" << std::endl
 				<< std::endl;
 		}
+		
+		if (!model.empty())
+		{
+			out << "void " << name << "View::SetModel(const " << model << "& value)" << std::endl
+				<< "{" << std::endl
+				<< "\tmodel = value;" << std::endl
+				<< "}" << std::endl
+				<< std::endl;
+		}
 	}
 	
 private:
-	static void ParseLine(const std::string& line, std::vector<std::string>& section, int& openBraceCount)
+	std::string Trim(const std::string& value)
 	{
-		std::ostringstream buffer;
-		enum { html, directive, value } state = html;
-		for (auto ch : line)
+		auto first = value.find_first_not_of(" \t");
+		if (first == std::string::npos)
+			return {};
+		auto last = value.find_last_not_of(" \t");
+		if (last == std::string::npos)
+			return value.substr(first);
+		return value.substr(first, last - first + 1);
+	}
+
+	std::size_t NextEscapeToken(const std::string& line, std::size_t start)
+	{
+		auto openBraceCount = 0;
+		for (auto index = start; index < line.size(); ++index)
 		{
-			switch (state)
+			auto ch = line[index];
+			if (ch == '{')
+				++openBraceCount;
+			else if (ch == '@')
+				return index;
+			else if (ch == '}')
 			{
-			case html:
-				//TODO:
-				break;
-				
-			case directive:
-				//TODO:
-				break;
-				
-			case value:
-				//TODO:
-				break;
+				if (openBraceCount > 0)
+					--openBraceCount;
+				else
+					return index;
 			}
 		}
-		//TODO: deal with leftover buffer
-		section.push_back("Write(\"\\n\");");
+		return std::string::npos;
+	}
+
+	void ParseLine(const std::string& line, std::vector<std::string>& section, int& openBraceCount)
+	{
+		// [@section Title {] title }
+		// [@section Body {]
+		//   <whatever>
+		//   <div>{{blah}}</div>
+		//   @for (auto x : y) {
+		//     <div>@write x;</div>
+		//   }
+		// }
+		std::size_t position = 0;
+		while (position != std::string::npos && position < line.size())
+		{
+			auto next = NextEscapeToken(line, position);
+			AddWrite(section, Trim(next == std::string::npos ?
+				line.substr(position) :
+				line.substr(position, next - position)));
+			if (next == std::string::npos)
+				break;
+			if (line[next] == '}')
+			{
+				--openBraceCount;
+				if (openBraceCount > 0)
+					section.push_back("}");
+				position = next + 1;
+			}
+			else //@
+			{
+				auto end = line.find_first_of(";{", next);
+				if (end == std::string::npos)
+				{
+					position = std::string::npos;
+					std::cout << "Missing ';' after '@' in " << name << " view." << std::endl;
+					std::cout << line << std::endl;
+				}
+				else if (line[end] == ';')
+				{
+					AddDirective(section, line.substr(next, end - next));
+					position = end + 1;
+				}
+				else
+				{
+					++openBraceCount;
+					section.push_back(line.substr(next + 1, end - next));
+					position = end + 1;
+				}
+			}
+		}
+		AddWrite(section, " ");
+	}
+	
+	void AddWrite(std::vector<std::string>& section, const std::string& value)
+	{
+		if (value.empty())
+			return;
+		std::ostringstream out;
+		out << "Write(\"";
+		for (auto ch : value)
+		{
+			if (ch == '\\' || ch == '"')
+				out << '\\';
+			out << ch;
+		}
+		out << "\");";
+		section.push_back(out.str());
+	}
+	
+	void AddDirective(std::vector<std::string>& section, const std::string& directive)
+	{
+		if (directive == "@render-body")
+		{
+			section.push_back("RenderBody_" + name + "();");
+			return;
+		}
+		auto space = directive.find(' ');
+		if (space == std::string::npos)
+		{
+			std::cout << "Missing ' ' after '@' in " << name << "view." << std::endl;
+			std::cout << directive << std::endl;
+			return;
+		}
+		auto directiveName = directive.substr(0, space);
+		if (directiveName == "@write")
+		{
+			section.push_back("Write(Html::EscapeHtml(" + directive.substr(space + 1) + "));");		
+		}
+		else if (directiveName == "@render")
+		{
+			auto sectionName = directive.substr(space + 1);
+			section.push_back("RenderSection_" + name + "_" + sectionName + "();");
+			sections.push_back(sectionName);
+		}
+		else
+		{
+			std::cout << "Invalid directive in " << name << " view: " << directive << std::endl;
+		}
 	}
 	
 	void WriteSection(const std::vector<std::string>& section, std::ostream& out) const

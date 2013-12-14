@@ -1,50 +1,43 @@
 angular.module('sheepsheadApp', []).controller('SheepsheadScoreCtrl', function ($scope, $http) {
-	$scope.player1Name = '';
-	$scope.player1Score = 0;
-	$scope.player2Name = '';
-	$scope.player2Score = 0;
-	$scope.player3Name = '';
-	$scope.player3Score = 0;
-	$scope.player4Name = '';
-	$scope.player4Score = 0;
-	$scope.player5Name = '';
-	$scope.player5Score = 0;
-	$scope.player6Name = '';
-	$scope.player6Score = 0;
+	$scope.playerCount = 0;
+	$scope.playerScores = [];
+	
+	$scope.addPlayer = function () {
+		var index = $scope.playerCount++;
+		$scope.playerScores.push({
+			nameId: 'player' + index + 'Name',
+			name: '',
+			scoreId: 'player' + index + 'Score',
+			score: 0
+		});
+	};
+	
+	for (number = 0; number < 6; ++number)
+		$scope.addPlayer();
 	
 	$scope.getPositivePointSpread = function () {
-		var pointSpread = 0;
-		if ($scope.player1Score > 0)
-			pointSpread += $scope.player1Score;
-		if ($scope.player2Score > 0)
-			pointSpread += $scope.player2Score;
-		if ($scope.player3Score > 0)
-			pointSpread += $scope.player3Score;
-		if ($scope.player4Score > 0)
-			pointSpread += $scope.player4Score;
-		if ($scope.player5Score > 0)
-			pointSpread += $scope.player5Score;
-		if ($scope.player6Score > 0)
-			pointSpread += $scope.player6Score;
-		return pointSpread;
+		return $scope.playerScores.filter(function (playerScore) {
+			return playerScore.score > 0;
+		}).reduce(function (total, playerScore) {
+			return total + playerScore.score;
+		}, 0);
 	};
 	
-	$scope.getCheckSum = function() {
-		return $scope.player1Score +
-			$scope.player2Score +
-			$scope.player3Score +
-			$scope.player4Score +
-			$scope.player5Score +
-			$scope.player6Score;
+	$scope.getCheckSum = function () {
+		return $scope.playerScores.reduce(function (total, playerScore) {
+			return total + playerScore.score;
+		}, 0);
 	};
 	
-	$scope.isValid = function() {
+	$scope.getPlayerCount = function () {
+		return $scope.playerScores.filter(function (playerScore) {
+			return playerScore.name > '';
+		}).length;
+	};
+	
+	$scope.isValid = function () {
 		return $scope.getCheckSum() == 0 &&
-			$scope.player1Name > '' &&
-			$scope.player2Name > '' &&
-			$scope.player3Name > '' &&
-			$scope.player4Name > '' &&
-			$scope.player5Name > '';
+			$scope.getPlayerCount() >= 5;
 	};
 });
 
