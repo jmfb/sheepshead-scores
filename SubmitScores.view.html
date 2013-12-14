@@ -1,6 +1,10 @@
 @layout Layout;
 @section Title { Sheepshead Scores }
-<div class="well">
+@section Scripts {
+	<script src="controllers.min.js"></script>
+	<script src="initialize.min.js"></script>
+}
+<div class="well" ng-controller="SheepsheadScoreCtrl">
 	<h2>Sheepshead Scores</h2>
 	<form class="form-horizontal" role="form" action="/sheepshead.cgi" method="post">
 		<div class="form-group" ng-repeat="playerScore in playerScores">

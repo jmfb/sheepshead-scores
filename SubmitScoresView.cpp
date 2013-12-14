@@ -7,7 +7,7 @@ void SubmitScoresView::RenderBody_SubmitScores()
 
 void SubmitScoresView::RenderBody_Layout()
 {
-	Write("<div class=\"well\">");
+	Write("<div class=\"well\" ng-controller=\"SheepsheadScoreCtrl\">");
 	Write(" ");
 	Write("<h2>Sheepshead Scores</h2>");
 	Write(" ");
@@ -112,6 +112,16 @@ void SubmitScoresView::RenderBody_Layout()
 	Write("</div>");
 	Write(" ");
 	Write("</div>");
+	Write(" ");
+	Write(" ");
+}
+
+void SubmitScoresView::RenderSection_Layout_Scripts()
+{
+	Write(" ");
+	Write("<script src=\"controllers.min.js\"></script>");
+	Write(" ");
+	Write("<script src=\"initialize.min.js\"></script>");
 	Write(" ");
 	Write(" ");
 }

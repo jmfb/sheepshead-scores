@@ -1,4 +1,5 @@
 *~
 ViewCompiler/ViewCompiler*
 CommandCompiler/CommandCompiler*
+*.min.js
 

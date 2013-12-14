@@ -9,6 +9,10 @@ void LayoutView::RenderSection_Layout_Title()
 {
 }
 
+void LayoutView::RenderSection_Layout_Scripts()
+{
+}
+
 void LayoutView::RenderBody()
 {
 	Write("<!DOCTYPE html>");
@@ -35,8 +39,6 @@ void LayoutView::RenderBody()
 	Write(" ");
 	Write("<link href=\"//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css\" rel=\"stylesheet\">");
 	Write(" ");
-	Write("<link href=\"styles.css\" rel=\"stylesheet\">");
-	Write(" ");
 	Write("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>");
 	Write(" ");
 	Write("<script src=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js\"></script>");
@@ -45,11 +47,9 @@ void LayoutView::RenderBody()
 	Write(" ");
 	Write("<script src=\"//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js\"></script>");
 	Write(" ");
-	Write("<script src=\"controllers.js\"></script>");
-	Write(" ");
 	Write("</head>");
 	Write(" ");
-	Write("<body ng-controller=\"SheepsheadScoreCtrl\">");
+	Write("<body>");
 	Write(" ");
 	Write("<div class=\"container\">");
 	Write(" ");
@@ -57,7 +57,7 @@ void LayoutView::RenderBody()
 	Write(" ");
 	Write("</div>");
 	Write(" ");
-	Write("<script src=\"initialize.js\"></script>");
+	RenderSection_Layout_Scripts();
 	Write(" ");
 	Write("</body>");
 	Write(" ");
