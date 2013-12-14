@@ -12,6 +12,7 @@ public:
 
 	virtual void RenderBody_SubmitScores();
 	virtual void RenderBody_Layout();
+	virtual void RenderSection_Layout_Header();
 	virtual void RenderSection_Layout_Scripts();
 	virtual void RenderSection_Layout_Title();
 

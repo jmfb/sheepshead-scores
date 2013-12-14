@@ -116,12 +116,24 @@ void SubmitScoresView::RenderBody_Layout()
 	Write(" ");
 }
 
+void SubmitScoresView::RenderSection_Layout_Header()
+{
+	Write(" ");
+	Write("<li class=\"active\"><a href=\"#\">Home</a></li>");
+	Write(" ");
+	Write("<li><a href=\"/sheepshead.cgi?action=report-mtd\">MTD Scores</a></li>");
+	Write(" ");
+	Write("<li><a href=\"/sheepshead.cgi?action=report-ytd\">YTD Scores</a></li>");
+	Write(" ");
+	Write(" ");
+}
+
 void SubmitScoresView::RenderSection_Layout_Scripts()
 {
 	Write(" ");
-	Write("<script src=\"controllers.min.js\"></script>");
+	Write("<script src=\"controllers.js\"></script>");
 	Write(" ");
-	Write("<script src=\"initialize.min.js\"></script>");
+	Write("<script src=\"initialize.js\"></script>");
 	Write(" ");
 	Write(" ");
 }

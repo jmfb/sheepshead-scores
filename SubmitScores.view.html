@@ -1,8 +1,13 @@
 @layout Layout;
 @section Title { Sheepshead Scores }
 @section Scripts {
-	<script src="controllers.min.js"></script>
-	<script src="initialize.min.js"></script>
+	<script src="controllers.js"></script>
+	<script src="initialize.js"></script>
+}
+@section Header {
+	<li class="active"><a href="#">Home</a></li>
+	<li><a href="/sheepshead.cgi?action=report-mtd">MTD Scores</a></li>
+	<li><a href="/sheepshead.cgi?action=report-ytd">YTD Scores</a></li>
 }
 <div class="well" ng-controller="SheepsheadScoreCtrl">
 	<h2>Sheepshead Scores</h2>

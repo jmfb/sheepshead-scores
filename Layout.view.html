@@ -16,6 +16,11 @@
 	</head>
 	<body>
 		<div class="container">
+			<nav class="navbar navbar-default" role="navigation">
+				<ul class="nav navbar-nav">
+					@render Header;
+				</ul>
+			</nav>
 			@render-body;
 		</div>
 		@render Scripts;

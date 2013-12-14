@@ -1,6 +1,16 @@
 @layout Layout;
 @model ReportsModel;
 @section Title { Sheepshead Scores }
+@section Header {
+	<li><a href="/sheepshead.cgi">Home</a></li>
+	@for (auto reportLink : model.GetReportLinks()) {
+		<li class="@write reportLink.GetLinkClass();">
+			<a href="@write reportLink.GetLinkHref();">
+				@write reportLink.GetLinkLabel();
+			</a>
+		</li>
+	}
+}
 @for (auto report : model.GetReports()) {
 	<div class="well">
 		<h1>@write report.GetTitle();</h1>

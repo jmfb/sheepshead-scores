@@ -9,6 +9,10 @@ void LayoutView::RenderSection_Layout_Title()
 {
 }
 
+void LayoutView::RenderSection_Layout_Header()
+{
+}
+
 void LayoutView::RenderSection_Layout_Scripts()
 {
 }
@@ -52,6 +56,16 @@ void LayoutView::RenderBody()
 	Write("<body>");
 	Write(" ");
 	Write("<div class=\"container\">");
+	Write(" ");
+	Write("<nav class=\"navbar navbar-default\" role=\"navigation\">");
+	Write(" ");
+	Write("<ul class=\"nav navbar-nav\">");
+	Write(" ");
+	RenderSection_Layout_Header();
+	Write(" ");
+	Write("</ul>");
+	Write(" ");
+	Write("</nav>");
 	Write(" ");
 	RenderBody_Layout();
 	Write(" ");

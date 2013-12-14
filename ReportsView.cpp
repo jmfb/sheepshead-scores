@@ -72,6 +72,32 @@ void ReportsView::RenderBody_Layout()
 	Write(" ");
 }
 
+void ReportsView::RenderSection_Layout_Header()
+{
+	Write(" ");
+	Write("<li><a href=\"/sheepshead.cgi\">Home</a></li>");
+	Write(" ");
+	for (auto reportLink : model.GetReportLinks()) {
+	Write(" ");
+	Write("<li class=\"");
+	Write(Html::EscapeHtml(reportLink.GetLinkClass()));
+	Write("\">");
+	Write(" ");
+	Write("<a href=\"");
+	Write(Html::EscapeHtml(reportLink.GetLinkHref()));
+	Write("\">");
+	Write(" ");
+	Write(Html::EscapeHtml(reportLink.GetLinkLabel()));
+	Write(" ");
+	Write("</a>");
+	Write(" ");
+	Write("</li>");
+	Write(" ");
+	}
+	Write(" ");
+	Write(" ");
+}
+
 void ReportsView::RenderSection_Layout_Title()
 {
 	Write("Sheepshead Scores");
