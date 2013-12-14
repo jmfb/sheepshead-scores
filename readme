@@ -1,0 +1,45 @@
+Installation Instructions
+=========================
+sudo apt-get install git
+sudo apt-get install apache2
+sudo apt-get install g++
+sudo apt-get install postgresql
+sudo apt-get install libpqxx-3.1
+sudo apt-get install libpqxx3-dev
+
+Setting up git
+==============
+git clone https://code.google.com/p/sheepshead-scores/
+
+Setting up apache
+=================
+sudo rm /var/www/index.html
+Configure /etc/apache2/apache2.conf
+	LoadModule cgi_module /usr/lib/apache2/modules/mod_cgi.so
+	LoadModule actions_module /usr/lib/apache2/modules/mod_actions.so
+
+	<Directory /var/www>
+		Options +ExecCGI
+		AddHandler cgi-script .cgi
+	</Directory>
+
+	<Directory /var/www/sheepshead.cgi>
+		Options +ExecCGI
+	</Directory>
+sudo service apache2 restart
+
+Setting up postgres
+===================
+sudo passwd postgres
+su postgres
+createuser Batman (or whoever)
+createuser "www-data"
+exit
+createdb sheepshead
+psql -d sheepshead -f install.sql
+
+Getting latest version/building
+===============================
+git pull origin master
+sudo sh build.sh
+
