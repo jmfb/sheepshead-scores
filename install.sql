@@ -10,8 +10,7 @@ create table game
 (
 	id serial not null,
 	playedWhen date not null,
-	constraint pk_game primary key (id),
-	constraint u_game_date unique (playedWhen)
+	constraint pk_game primary key (id)
 );
 
 create table gamePlayer

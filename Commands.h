@@ -27,10 +27,6 @@ namespace Commands
 		"	{0}\n"
 		")\n"
 		"returning id;\n";
-	const std::string FindGame =
-		"select	id\n"
-		"from	game\n"
-		"where	playedwhen = {0};\n";
 	const std::string FindGamePlayer =
 		"select	score\n"
 		"from	gamePlayer\n"

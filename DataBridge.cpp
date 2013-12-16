@@ -2,11 +2,9 @@
 #include "SqlCommand.h"
 #include "Commands.h"
 
-int FindOrCreateGame(SqlCommand& command, const std::string& date)
+int CreateGame(SqlCommand& command, const std::string& date)
 {
-	auto results = command.Execute(Commands::FindGame, date);
-	if (results.empty())
-		results = command.Execute(Commands::CreateGame, date);
+	auto results = command.Execute(Commands::CreateGame, date);
 	return results[0][0].as<int>();
 }
 
@@ -41,7 +39,7 @@ NameLookupModel DataBridge::LookupNames(const std::string& query)
 ReportModel DataBridge::ReportScores(const std::string& date, const std::vector<PlayerScoreModel>& playerScores)
 {
 	SqlCommand command;
-	auto gameId = FindOrCreateGame(command, date);
+	auto gameId = CreateGame(command, date);
 
 	ReportModel report;
 	report.SetTitle("New Scores for " + date + ".");
