@@ -44,3 +44,7 @@ Getting latest version/building
 git pull origin master
 sudo sh build.sh
 
+Setting up local time
+=====================
+sudo ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
+
