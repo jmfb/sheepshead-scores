@@ -17,5 +17,6 @@ private:
 	HttpResponse SubmitScores(const std::vector<PlayerScoreModel>& playerScores);
 	HttpResponse ReportMTD();
 	HttpResponse ReportYTD();
+	HttpResponse ReportHistory();
 };
 

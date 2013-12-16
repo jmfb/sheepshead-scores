@@ -32,10 +32,27 @@ namespace Commands
 		"from	gamePlayer\n"
 		"where	gameId = {0}\n"
 		"and	playerId = {1};\n";
+	const std::string FindGames =
+		"select	id,\n"
+		"	playedWhen\n"
+		"from	game\n"
+		"order by playedWhen desc,\n"
+		"	id desc\n"
+		"limit	{0}\n"
+		"offset	{1};\n";
 	const std::string FindPlayer =
 		"select	id\n"
 		"from	player\n"
 		"where	name = {0};\n";
+	const std::string LoadGame =
+		"select	player.name,\n"
+		"	gamePlayer.score\n"
+		"from	gamePlayer\n"
+		"	inner join player\n"
+		"	on	player.id = gamePlayer.playerId\n"
+		"where	gamePlayer.gameId = {0}\n"
+		"order by gamePlayer.score desc,\n"
+		"	player.name asc;\n";
 	const std::string NameLookup =
 		"select	name\n"
 		"from	player\n"

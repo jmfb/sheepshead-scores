@@ -68,3 +68,21 @@ ReportModel DataBridge::ReportScoresSince(const std::string& since, const std::s
 	return report;
 }
 
+ReportsModel DataBridge::FindGames(int skip, int take)
+{
+	SqlCommand command;
+	ReportsModel reports;
+	auto games = command.Execute(Commands::FindGames, take, skip);
+	for (auto game : games)
+	{
+		ReportModel report;
+		report.SetTitle("Scores for " + game[1].as<std::string>() + ".");
+		auto results = command.Execute(Commands::LoadGame, game[0].as<int>());
+		auto playerScores = PlayerScoreModel::LoadAll(results, 0, 1);
+		for (auto playerScore : playerScores)
+			report.AddPlayerScore(playerScore);
+		reports.AddReport(report);
+	}
+	return reports;
+}
+

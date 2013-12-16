@@ -7,7 +7,7 @@ void SubmitScoresView::RenderBody_SubmitScores()
 
 void SubmitScoresView::RenderBody_Layout()
 {
-	Write("<div class=\"well\" ng-controller=\"SheepsheadScoreCtrl\">");
+	Write("<div class=\"well\" ng-controller=\"SheepsheadScoreCtrl\" ng-cloak>");
 	Write(" ");
 	Write("<h2>Sheepshead Scores</h2>");
 	Write(" ");
@@ -126,6 +126,8 @@ void SubmitScoresView::RenderSection_Layout_Header()
 	Write("<li><a href=\"/sheepshead.cgi?action=report-mtd\">MTD Scores</a></li>");
 	Write(" ");
 	Write("<li><a href=\"/sheepshead.cgi?action=report-ytd\">YTD Scores</a></li>");
+	Write(" ");
+	Write("<li><a href=\"/sheepshead.cgi?action=report-history\">History</a></li>");
 	Write(" ");
 	Write(" ");
 }

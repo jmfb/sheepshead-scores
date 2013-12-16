@@ -20,6 +20,8 @@ HttpResponse Controller::Execute()
 				return ReportMTD();
 			else if (IsAction("report-ytd"))
 				return ReportYTD();
+			else if (IsAction("report-history"))
+				return ReportHistory();
 			return Index();
 	
 		case HttpRequestMethod::Post:
@@ -55,6 +57,7 @@ HttpResponse Controller::SubmitScores(const std::vector<PlayerScoreModel>& playe
 	ReportsModel reports;
 	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-mtd", "MTD Scores" });
 	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-ytd", "YTD Scores" });
+	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-history", "History" });
 	reports.AddReportLink({ "active", "#", "Results" });
 	DataBridge dataBridge;
 	reports.AddReport(dataBridge.ReportScores(Date::GetToday(), playerScores));
@@ -68,6 +71,7 @@ HttpResponse Controller::ReportMTD()
 	ReportsModel reports;
 	reports.AddReportLink({ "active", "#", "MTD Scores" });
 	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-ytd", "YTD Scores" });
+	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-history", "History" });
 	DataBridge dataBridge;
 	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), "MTD Totals"));
 	return View<ReportsView>(reports);
@@ -78,8 +82,19 @@ HttpResponse Controller::ReportYTD()
 	ReportsModel reports;
 	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-mtd", "MTD Scores" });
 	reports.AddReportLink({ "active", "#", "YTD Scores" });
+	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-history", "History" });
 	DataBridge dataBridge;
 	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), "YTD Totals"));
+	return View<ReportsView>(reports);
+}
+
+HttpResponse Controller::ReportHistory()
+{
+	DataBridge dataBridge;
+	auto reports = dataBridge.FindGames(0, 10);
+	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-mtd", "MTD Scores" });
+	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-ytd", "YTD Scores" });
+	reports.AddReportLink({ "active", "#", "History" });
 	return View<ReportsView>(reports);
 }
 
