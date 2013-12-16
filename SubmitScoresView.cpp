@@ -13,7 +13,13 @@ void SubmitScoresView::RenderBody_Layout()
 	Write(" ");
 	Write("<form class=\"form-horizontal\" role=\"form\" action=\"/sheepshead.cgi\" method=\"post\">");
 	Write(" ");
-	Write("<div class=\"form-group\" ng-repeat=\"playerScore in playerScores\">");
+	Write("<div");
+	Write(" ");
+	Write("class=\"form-group\"");
+	Write(" ");
+	Write("on-repeat-done=\"autocomplete\"");
+	Write(" ");
+	Write("ng-repeat=\"playerScore in playerScores\">");
 	Write(" ");
 	Write("<div class=\"col-sm-3\">");
 	Write(" ");
@@ -53,7 +59,17 @@ void SubmitScoresView::RenderBody_Layout()
 	Write(" ");
 	Write("<div class=\"form-group\">");
 	Write(" ");
-	Write("<div class=\"col-sm-3\">");
+	Write("<div class=\"col-sm-5\">");
+	Write(" ");
+	Write("<p");
+	Write(" ");
+	Write("class=\"form-control-static\"");
+	Write(" ");
+	Write("style=\"float: right;\">");
+	Write(" ");
+	Write("P.S. {{getPositivePointSpread()}}");
+	Write(" ");
+	Write("</p>");
 	Write(" ");
 	Write("<button");
 	Write(" ");
@@ -78,20 +94,6 @@ void SubmitScoresView::RenderBody_Layout()
 	Write("+ Add a Player");
 	Write(" ");
 	Write("</button>");
-	Write(" ");
-	Write("</div>");
-	Write(" ");
-	Write("<div class=\"col-sm-2\">");
-	Write(" ");
-	Write("<p");
-	Write(" ");
-	Write("class=\"form-control-static\"");
-	Write(" ");
-	Write("style=\"text-align: right;\">");
-	Write(" ");
-	Write("P.S. {{getPositivePointSpread()}}");
-	Write(" ");
-	Write("</p>");
 	Write(" ");
 	Write("</div>");
 	Write(" ");
@@ -131,9 +133,7 @@ void SubmitScoresView::RenderSection_Layout_Header()
 void SubmitScoresView::RenderSection_Layout_Scripts()
 {
 	Write(" ");
-	Write("<script src=\"controllers.js\"></script>");
-	Write(" ");
-	Write("<script src=\"initialize.js\"></script>");
+	Write("<script src=\"SheepsheadScoreCtrl.js\"></script>");
 	Write(" ");
 	Write(" ");
 }

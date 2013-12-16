@@ -53,9 +53,9 @@ HttpResponse Controller::LookupNames(const std::string& query)
 HttpResponse Controller::SubmitScores(const std::vector<PlayerScoreModel>& playerScores)
 {
 	ReportsModel reports;
-	reports.AddReportLink({ "active", "#", "Summary" });
 	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-mtd", "MTD Scores" });
 	reports.AddReportLink({ "", "/sheepshead.cgi?action=report-ytd", "YTD Scores" });
+	reports.AddReportLink({ "active", "#", "Results" });
 	DataBridge dataBridge;
 	reports.AddReport(dataBridge.ReportScores(Date::GetToday(), playerScores));
 	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), "MTD Totals"));

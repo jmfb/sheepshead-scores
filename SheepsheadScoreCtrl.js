@@ -1,19 +1,39 @@
-angular.module('sheepsheadApp', []).controller('SheepsheadScoreCtrl', function ($scope, $http) {
+var app = angular.module('sheepsheadApp', []);
+app.directive('onRepeatDone', function () {
+	return {
+		link: function ($scope, element, attributes) {
+			$scope.$emit(attributes['onRepeatDone'], element);
+		}
+	}; 
+});
+app.controller('SheepsheadScoreCtrl', function ($scope, $http) {
+	$scope.$on('autocomplete', function (event, element) {
+		element.find('.name-lookup').autocomplete({
+			source: function (request, response) {
+				$.get('/sheepshead.cgi', { action: 'name-lookup', query: request.term })
+					.done(function (data) {
+						response(data.names);
+					});
+			}
+		});
+	});
+	
 	$scope.playerCount = 0;
 	$scope.playerScores = [];
 	
 	$scope.addPlayer = function () {
 		var index = $scope.playerCount++;
+		var nameId = 'player' + index + 'Name';
 		$scope.playerScores.push({
-			nameId: 'player' + index + 'Name',
+			nameId: nameId,
 			name: '',
 			scoreId: 'player' + index + 'Score',
 			score: 0
 		});
 	};
-	
+
 	for (number = 0; number < 6; ++number)
-		$scope.addPlayer();
+		$scope.addPlayer(false);
 	
 	$scope.getPositivePointSpread = function () {
 		return $scope.playerScores.filter(function (playerScore) {

@@ -1,8 +1,7 @@
 @layout Layout;
 @section Title { Sheepshead Scores }
 @section Scripts {
-	<script src="controllers.js"></script>
-	<script src="initialize.js"></script>
+	<script src="SheepsheadScoreCtrl.js"></script>
 }
 @section Header {
 	<li class="active"><a href="#">Home</a></li>
@@ -12,7 +11,10 @@
 <div class="well" ng-controller="SheepsheadScoreCtrl">
 	<h2>Sheepshead Scores</h2>
 	<form class="form-horizontal" role="form" action="/sheepshead.cgi" method="post">
-		<div class="form-group" ng-repeat="playerScore in playerScores">
+		<div
+			class="form-group"
+			on-repeat-done="autocomplete"
+			ng-repeat="playerScore in playerScores">
 			<div class="col-sm-3">
 				<input
 					type="text"
@@ -32,7 +34,12 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="col-sm-3">
+			<div class="col-sm-5">
+				<p
+					class="form-control-static"
+					style="float: right;">
+					P.S. {{getPositivePointSpread()}}
+				</p>
 				<button
 					type="submit"
 					class="btn btn-default btn-primary"
@@ -45,13 +52,6 @@
 					ng-click="addPlayer()">
 					+ Add a Player
 				</button>
-			</div>
-			<div class="col-sm-2">
-				<p
-					class="form-control-static"
-					style="text-align: right;">
-					P.S. {{getPositivePointSpread()}}
-				</p>
 			</div>
 		</div>
 		<input type="hidden" name="playerCount" value="{{playerCount}}">
