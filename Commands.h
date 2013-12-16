@@ -39,7 +39,7 @@ namespace Commands
 	const std::string NameLookup =
 		"select	name\n"
 		"from	player\n"
-		"where	name\n"
+		"where	lower(name)\n"
 		"like	{0}\n"
 		"order by name\n"
 		"limit	{1};\n";

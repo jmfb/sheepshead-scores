@@ -6,6 +6,8 @@ create table player
 	constraint u_player_name unique (name)
 );
 
+create unique index u_player_lower_name on player (lower(name) text_ops);
+
 create table game
 (
 	id serial not null,

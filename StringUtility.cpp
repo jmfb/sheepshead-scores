@@ -1,4 +1,6 @@
 #include "StringUtility.h"
+#include <iterator>
+#include <algorithm>
 
 namespace String
 {
@@ -36,6 +38,17 @@ std::string Replace(const std::string& value, const std::string& find, const std
 		result.replace(index, find.size(), replace);
 		index = result.find(find, index + replace.size());
 	}
+	return result;
+}
+
+std::string ToLower(const std::string& value)
+{
+	std::string result;
+	std::transform(
+		value.begin(),
+		value.end(),
+		std::back_inserter(result),
+		[](char ch){ return std::tolower(ch); });
 	return result;
 }
 

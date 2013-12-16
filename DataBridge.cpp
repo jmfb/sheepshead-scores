@@ -1,6 +1,7 @@
 #include "DataBridge.h"
 #include "SqlCommand.h"
 #include "Commands.h"
+#include "StringUtility.h"
 
 int CreateGame(SqlCommand& command, const std::string& date)
 {
@@ -29,7 +30,7 @@ NameLookupModel DataBridge::LookupNames(const std::string& query)
 {
 	const auto maximumResults = 5;
 	SqlCommand command;
-	auto results = command.Execute(Commands::NameLookup, "%" + query + "%", maximumResults);
+	auto results = command.Execute(Commands::NameLookup, "%" + String::ToLower(query) + "%", maximumResults);
 	NameLookupModel model;
 	for (auto result : results)
 		model.AddName(result[0].as<std::string>());
