@@ -1,8 +1,8 @@
 #include "ReportsModel.h"
 
-void ReportsModel::AddReportLink(const ReportLinkModel& value)
+void ReportsModel::SetViewType(ViewType value)
 {
-	reportLinks.push_back(value);
+	viewType = value;
 }
 
 void ReportsModel::AddReport(const ReportModel& value)
@@ -10,9 +10,9 @@ void ReportsModel::AddReport(const ReportModel& value)
 	reports.push_back(value);
 }
 
-const std::vector<ReportLinkModel>& ReportsModel::GetReportLinks() const
+ViewType ReportsModel::GetViewType() const
 {
-	return reportLinks;
+	return viewType;
 }
 
 const std::vector<ReportModel>& ReportsModel::GetReports() const

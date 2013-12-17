@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseController.h"
 #include "PlayerScoreModel.h"
+#include "FileUploadData.h"
 #include <string>
 #include <vector>
 
@@ -18,5 +19,7 @@ private:
 	HttpResponse ReportMTD();
 	HttpResponse ReportYTD();
 	HttpResponse ReportHistory();
+	HttpResponse UploadScores();
+	HttpResponse UploadScores(const FileUploadData& fileUpload);
 };
 

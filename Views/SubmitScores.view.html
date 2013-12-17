@@ -1,13 +1,11 @@
-@layout Layout;
+@include HeaderView
+@layout Layout
 @section Title { Sheepshead Scores }
 @section Scripts {
 	<script src="SheepsheadScoreCtrl.js"></script>
 }
 @section Header {
-	<li class="active"><a href="#">Home</a></li>
-	<li><a href="/sheepshead.cgi?action=report-mtd">MTD Scores</a></li>
-	<li><a href="/sheepshead.cgi?action=report-ytd">YTD Scores</a></li>
-	<li><a href="/sheepshead.cgi?action=report-history">History</a></li>
+	@html Partial<HeaderView>(ViewType::SubmitScores);
 }
 <div class="well" ng-controller="SheepsheadScoreCtrl" ng-cloak>
 	<h2>Sheepshead Scores</h2>

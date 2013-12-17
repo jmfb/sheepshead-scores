@@ -1,0 +1,10 @@
+@include HeaderLinks
+@model ViewType
+@for (auto link : GetHeaderLinks()) {
+	<li class="@write link.GetLinkClass(model);">
+		<a href="@write link.GetLinkHref(model);">
+			@write link.GetLinkLabel();
+		</a>
+	</li>
+}
+

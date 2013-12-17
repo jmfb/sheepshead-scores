@@ -20,6 +20,8 @@ std::vector<std::string> Split(const std::string& value, const std::string& sepa
 		{
 			result.push_back(value.substr(index, end - index));
 			index = end + separator.size();
+			if (index == value.size())
+				result.push_back({});
 		}
 	}
 	if (result.empty())

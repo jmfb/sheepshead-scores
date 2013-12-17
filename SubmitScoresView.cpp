@@ -1,5 +1,6 @@
 #include "SubmitScoresView.h"
 #include "HtmlUtility.h"
+#include "HeaderView.h"
 
 void SubmitScoresView::RenderBody_SubmitScores()
 {
@@ -121,13 +122,7 @@ void SubmitScoresView::RenderBody_Layout()
 void SubmitScoresView::RenderSection_Layout_Header()
 {
 	Write(" ");
-	Write("<li class=\"active\"><a href=\"#\">Home</a></li>");
-	Write(" ");
-	Write("<li><a href=\"/sheepshead.cgi?action=report-mtd\">MTD Scores</a></li>");
-	Write(" ");
-	Write("<li><a href=\"/sheepshead.cgi?action=report-ytd\">YTD Scores</a></li>");
-	Write(" ");
-	Write("<li><a href=\"/sheepshead.cgi?action=report-history\">History</a></li>");
+	Write(Partial<HeaderView>(ViewType::SubmitScores));
 	Write(" ");
 	Write(" ");
 }

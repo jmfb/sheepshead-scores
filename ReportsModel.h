@@ -1,5 +1,5 @@
 #pragma once
-#include "ReportLinkModel.h"
+#include "ViewType.h"
 #include "ReportModel.h"
 #include <vector>
 
@@ -12,14 +12,14 @@ public:
 	
 	ReportsModel& operator=(const ReportsModel& rhs) = default;
 
-	void AddReportLink(const ReportLinkModel& value);
+	void SetViewType(ViewType value);
 	void AddReport(const ReportModel& value);
 	
-	const std::vector<ReportLinkModel>& GetReportLinks() const;
+	ViewType GetViewType() const;
 	const std::vector<ReportModel>& GetReports() const;
 
 private:
-	std::vector<ReportLinkModel> reportLinks;
+	ViewType viewType;
 	std::vector<ReportModel> reports;
 };
 

@@ -1,5 +1,6 @@
 #include "ReportsView.h"
 #include "HtmlUtility.h"
+#include "HeaderView.h"
 
 void ReportsView::RenderBody_Reports()
 {
@@ -75,25 +76,7 @@ void ReportsView::RenderBody_Layout()
 void ReportsView::RenderSection_Layout_Header()
 {
 	Write(" ");
-	Write("<li><a href=\"/sheepshead.cgi\">Home</a></li>");
-	Write(" ");
-	for (auto reportLink : model.GetReportLinks()) {
-	Write(" ");
-	Write("<li class=\"");
-	Write(Html::EscapeHtml(reportLink.GetLinkClass()));
-	Write("\">");
-	Write(" ");
-	Write("<a href=\"");
-	Write(Html::EscapeHtml(reportLink.GetLinkHref()));
-	Write("\">");
-	Write(" ");
-	Write(Html::EscapeHtml(reportLink.GetLinkLabel()));
-	Write(" ");
-	Write("</a>");
-	Write(" ");
-	Write("</li>");
-	Write(" ");
-	}
+	Write(Partial<HeaderView>(model.GetViewType()));
 	Write(" ");
 	Write(" ");
 }

@@ -37,3 +37,18 @@ inline HttpResponse View(const TModel& model, int statusCode = 0)
 	return { "text/html", view.Render(), statusCode };
 }
 
+template <typename TView>
+inline std::string Partial()
+{
+	TView view;
+	return view.Render();
+}
+
+template <typename TView, typename TModel>
+inline std::string Partial(const TModel& model)
+{
+	TView view;
+	view.SetModel(model);
+	return view.Render();
+}
+

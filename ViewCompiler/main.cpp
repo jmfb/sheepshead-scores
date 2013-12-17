@@ -23,6 +23,11 @@ public:
 		model = value;
 	}
 	
+	void AddInclude(const std::string& value)
+	{
+		includes.push_back(value);
+	}
+	
 	void AddSection(const std::string& value)
 	{
 		sections.push_back(value);
@@ -84,9 +89,11 @@ public:
 	{
 		std::ofstream out(name + "View.cpp");
 		out << "#include \"" << name << "View.h\"" << std::endl
-			<< "#include \"HtmlUtility.h\"" << std::endl
-			<< std::endl;
-			
+			<< "#include \"HtmlUtility.h\"" << std::endl;
+		for (auto include : includes)
+			out << "#include \"" << include << ".h\"" << std::endl;
+		out << std::endl;
+
 		out << "void " << name << "View::RenderBody_" << name << "()" << std::endl
 			<< "{" << std::endl
 			<< "}" << std::endl
@@ -245,6 +252,10 @@ private:
 		{
 			section.push_back("Write(Html::EscapeHtml(" + directive.substr(space + 1) + "));");		
 		}
+		else if (directiveName == "@html")
+		{
+			section.push_back("Write(" + directive.substr(space + 1) + ");");
+		}
 		else if (directiveName == "@render")
 		{
 			auto sectionName = directive.substr(space + 1);
@@ -267,6 +278,7 @@ private:
 	std::string name;
 	std::string layout;
 	std::string model;
+	std::vector<std::string> includes;
 	std::vector<std::string> sections;
 	std::vector<std::string> body;
 	std::map<std::string, std::vector<std::string>> sectionBodies;
@@ -316,7 +328,12 @@ void CompileView(const std::string& fileName)
 	{
 		std::size_t sectionStart = 0;
 		std::string directiveValue;
-		if (ParseDirective(line, "layout", directiveValue))
+		if (ParseDirective(line, "include", directiveValue))
+		{
+			view.AddInclude(directiveValue);
+			continue;
+		}
+		else if (ParseDirective(line, "layout", directiveValue))
 		{
 			view.SetLayout(directiveValue);
 			continue;

@@ -1,6 +1,10 @@
-@layout Layout;
-@model ErrorLinesModel;
+@include HeaderView
+@layout Layout
+@model ErrorLinesModel
 @section Title { Error }
+@section Header {
+	@html Partial<HeaderView>(ViewType::Error);
+}
 <pre>
 @for (auto errorLine : model.GetErrorLines()) {
 	@write errorLine;<br/>
