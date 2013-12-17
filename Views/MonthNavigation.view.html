@@ -1,0 +1,22 @@
+@model MonthModel
+<div style="height: 52px;">
+	<form
+		role="form"
+		action="/sheepshead.cgi"
+		method="get"
+		style="float: left;">
+		<input type="hidden" name="action" value="report-mtd">
+		<input type="hidden" name="date" value="@write model.GetPreviousMonth();">
+		<button type="submit" class="btn">Previous Month</button>
+	</form>
+	<form
+		role="form"
+		action="/sheepshead.cgi"
+		method="get"
+		style="float: right;">
+		<input type="hidden" name="action" value="report-mtd">
+		<input type="hidden" name="date" value="@write model.GetNextMonth();">
+		<button type="submit" class="btn">Next Month</button>
+	</form>
+</div>
+

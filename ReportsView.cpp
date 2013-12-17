@@ -10,7 +10,9 @@ void ReportsView::RenderBody_Layout()
 {
 	for (auto report : model.GetReports()) {
 	Write(" ");
-	Write("<div class=\"well\">");
+	Write(model.GetNavigationHtml());
+	Write(" ");
+	Write("<div class=\"well\" style=\"clear: both;\">");
 	Write(" ");
 	Write("<h1 style=\"float: left;\">");
 	Write(Html::EscapeHtml(report.GetTitle()));

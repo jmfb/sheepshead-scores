@@ -1,0 +1,22 @@
+@model YearModel
+<div style="height: 52px;">
+	<form
+		role="form"
+		action="/sheepshead.cgi"
+		method="get"
+		style="float: left;">
+		<input type="hidden" name="action" value="report-ytd">
+		<input type="hidden" name="date" value="@write model.GetPreviousYear();">
+		<button type="submit" class="btn">Previous Year</button>
+	</form>
+	<form
+		role="form"
+		action="/sheepshead.cgi"
+		method="get"
+		style="float: right;">
+		<input type="hidden" name="action" value="report-ytd">
+		<input type="hidden" name="date" value="@write model.GetNextYear();">
+		<button type="submit" class="btn">Next Year</button>
+	</form>
+</div>
+

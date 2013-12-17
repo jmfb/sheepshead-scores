@@ -50,9 +50,6 @@ namespace Commands
 		"where	gameId = {0};\n"
 		"delete	from game\n"
 		"where	id = {0};\n";
-	const std::string DeleteGamePlayers =
-		"delete	from gamePlayer\n"
-		"where	gameId = {0};\n";
 	const std::string FindGamePlayer =
 		"select	score\n"
 		"from	gamePlayer\n"
@@ -95,6 +92,7 @@ namespace Commands
 		"	inner join player\n"
 		"	on	player.id = gamePlayer.playerId\n"
 		"where	game.playedWhen >= {0}\n"
+		"and	game.playedWhen < {1}\n"
 		"group by player.name\n"
 		"order by 2 desc,\n"
 		"	1 asc;\n";

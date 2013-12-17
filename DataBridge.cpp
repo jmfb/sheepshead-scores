@@ -56,10 +56,10 @@ ReportModel DataBridge::ReportScores(const std::string& date, const std::vector<
 	return report;
 }
 
-ReportModel DataBridge::ReportScoresSince(const std::string& since, const std::string& title)
+ReportModel DataBridge::ReportScoresSince(const std::string& since, const std::string& until, const std::string& title)
 {
 	SqlCommand command;
-	auto results = command.Execute(Commands::ScoreReport, since);
+	auto results = command.Execute(Commands::ScoreReport, since, until);
 	ReportModel report;
 	report.SetTitle(title);
 	auto playerScores = PlayerScoreModel::LoadAll(results, 0, 1);

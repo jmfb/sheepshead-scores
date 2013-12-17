@@ -4,6 +4,8 @@
 #include "SubmitScoresView.h"
 #include "ReportsView.h"
 #include "UploadScoresView.h"
+#include "MonthNavigationView.h"
+#include "YearNavigationView.h"
 #include "DataBridge.h"
 #include "JsonUtility.h"
 #include "DateUtility.h"
@@ -19,9 +21,9 @@ HttpResponse Controller::Execute()
 			if (IsAction("name-lookup"))
 				return LookupNames(request.GetQueryString()("query"));
 			else if (IsAction("report-mtd"))
-				return ReportMTD();
+				return ReportMTD(request.GetQueryString()("date"));
 			else if (IsAction("report-ytd"))
-				return ReportYTD();
+				return ReportYTD(request.GetQueryString()("date"));
 			else if (IsAction("report-history"))
 				return ReportHistory();
 			else if (IsAction("upload-scores"))
@@ -66,27 +68,36 @@ HttpResponse Controller::SubmitScores(const std::vector<PlayerScoreModel>& playe
 	ReportsModel reports;
 	reports.SetViewType(ViewType::Summary);
 	DataBridge dataBridge;
-	reports.AddReport(dataBridge.ReportScores(Date::GetToday(), playerScores));
-	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), "MTD Totals"));
-	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), "YTD Totals"));
+	auto today = Date::GetToday();
+	reports.AddReport(dataBridge.ReportScores(today, playerScores));
+	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), today, "MTD Totals"));
+	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), today, "YTD Totals"));
 	return View<ReportsView>(reports);
 }
 
-HttpResponse Controller::ReportMTD()
+HttpResponse Controller::ReportMTD(const std::string& requestedDate)
 {
+	auto date = requestedDate.empty() ? Date::GetBeginningOfMonth() : requestedDate;
+	MonthModel model(date);
 	ReportsModel reports;
 	reports.SetViewType(ViewType::ReportMTD);
+	reports.SetNavigationHtml(Partial<MonthNavigationView>(model));
 	DataBridge dataBridge;
-	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), "MTD Totals"));
+	auto title = "MTD Totals - " + model.GetLabel();
+	reports.AddReport(dataBridge.ReportScoresSince(model.GetBeginningOfMonth(), model.GetNextMonth(), title));
 	return View<ReportsView>(reports);
 }
 
-HttpResponse Controller::ReportYTD()
+HttpResponse Controller::ReportYTD(const std::string& requestedDate)
 {
+	auto date = requestedDate.empty() ? Date::GetBeginningOfYear() : requestedDate;
+	YearModel model(date);
 	ReportsModel reports;
 	reports.SetViewType(ViewType::ReportYTD);
+	reports.SetNavigationHtml(Partial<YearNavigationView>(model));
 	DataBridge dataBridge;
-	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), "YTD Totals"));
+	auto title = "YTD Totals - " + model.GetLabel();
+	reports.AddReport(dataBridge.ReportScoresSince(model.GetBeginningOfYear(), model.GetNextYear(), title));
 	return View<ReportsView>(reports);
 }
 
@@ -112,14 +123,14 @@ HttpResponse Controller::UploadScores(const FileUploadData& fileUpload)
 	auto headers = String::Split(header, ",");
 	if (headers.empty() || headers[0] != "Date")
 		return Error("Headers cannot be empty and must have Date in first column.\n" + header, 400);
-	DataBridge dataBridge;
+	std::vector<std::pair<std::string, std::vector<PlayerScoreModel>>> games;
 	while (std::getline(in, line))
 	{
 		if (line.empty())
 			continue;
 		auto values = String::Split(line, ",");
 		if (values.size() != headers.size())
-			return Error("Values must match headers.\n" + std::to_string(headers.size()) + " headers, " + std::to_string(values.size()) + " values.\n" + header + "\n" + line, 400);
+			return Error("Values must match headers.\n" + line, 400);
 		auto date = values[0];
 		std::vector<PlayerScoreModel> playerScores;
 		auto checkSum = 0;
@@ -144,9 +155,14 @@ HttpResponse Controller::UploadScores(const FileUploadData& fileUpload)
 			return Error("Games must contain at least 5 players (" + date + ")", 400);
 		if (checkSum != 0)
 			return Error("Games must have a check sum of zero (" + date + ")", 400);
-		dataBridge.ReportScores(date, playerScores);
+		games.push_back({ date, playerScores });
 	}
-	return View<SubmitScoresView>();
+
+	DataBridge dataBridge;
+	for (auto game : games)
+		dataBridge.ReportScores(game.first, game.second);
+
+	return Redirect("/sheepshead.cgi");
 }
 
 HttpResponse Controller::DeleteGame(int gameId)

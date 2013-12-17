@@ -6,7 +6,8 @@
 	@html Partial<HeaderView>(model.GetViewType());
 }
 @for (auto report : model.GetReports()) {
-	<div class="well">
+	@html model.GetNavigationHtml();
+	<div class="well" style="clear: both;">
 		<h1 style="float: left;">@write report.GetTitle();</h1>
 		@if (report.CanDelete()) {
 			<form
