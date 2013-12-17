@@ -26,8 +26,11 @@ int main()
 		<< "{" << std::endl;
 	while (std::getline(std::cin, fileName))
 	{
-		auto dot = fileName.find('.');
-		auto name = dot == std::string::npos ? fileName : fileName.substr(0, dot);
+		auto lastSlash = fileName.rfind('/');
+		auto dot = fileName.find('.', lastSlash);
+		auto name = dot == std::string::npos ?
+			fileName.substr(lastSlash + 1) :
+			fileName.substr(lastSlash + 1, dot - lastSlash - 1);
 		out << "\tconst std::string " << name << " =";
 		std::ifstream in(fileName);
 		std::string line;

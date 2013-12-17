@@ -274,10 +274,11 @@ private:
 
 std::string GetViewName(const std::string& fileName)
 {
-	auto index = fileName.find('.');
+	auto lastSlash = fileName.rfind('/');
+	auto index = fileName.find('.', lastSlash + 1);
 	if (index == std::string::npos)
-		return fileName;
-	return fileName.substr(0, index);
+		return fileName.substr(lastSlash + 1);
+	return fileName.substr(lastSlash + 1, index - lastSlash - 1);
 }
 
 bool ParseDirective(const std::string& line, const std::string& directive, std::string& value)
