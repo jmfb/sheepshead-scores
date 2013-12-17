@@ -21,5 +21,6 @@ private:
 	HttpResponse ReportHistory();
 	HttpResponse UploadScores();
 	HttpResponse UploadScores(const FileUploadData& fileUpload);
+	HttpResponse DeleteGame(int gameId);
 };
 

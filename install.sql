@@ -25,3 +25,20 @@ create table gamePlayer
 	constraint fk_gamePlayer_player foreign key (playerId) references player (id)
 );
 
+create table deletedGame
+(
+	id int not null,
+	playedWhen date not null,
+	constraint pk_deletedGame primary key (id)
+);
+
+create table deletedGamePlayer
+(
+	gameId int not null,
+	playerId int not null,
+	score int not null,
+	constraint pk_deletedGamePlayer primary key (gameId, playerId),
+	constraint fk_deletedGamePlayer_deletedGame foreign key (gameId) references deletedGame (id),
+	constraint fk_deletedGamePlayer_player foreign key (playerId) references player (id)
+);
+

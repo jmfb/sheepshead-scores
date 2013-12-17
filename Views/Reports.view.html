@@ -7,7 +7,18 @@
 }
 @for (auto report : model.GetReports()) {
 	<div class="well">
-		<h1>@write report.GetTitle();</h1>
+		<h1 style="float: left;">@write report.GetTitle();</h1>
+		@if (report.CanDelete()) {
+			<form
+				role="form"
+				action="/sheepshead.cgi"
+				method="post"
+				style="float: right; position: relative; top: 20px;">
+				<input type="hidden" name="action" value="delete-game">
+				<input type="hidden" name="gameId" value="@write report.GetGameId();">
+				<button type="submit" class="btn">Delete</button>
+			</form>
+		}
 		<table class="table table-striped">
 			<thead>
 				<tr>

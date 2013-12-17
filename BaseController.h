@@ -16,6 +16,7 @@ public:
 	
 protected:
 	HttpResponse Error(const std::string& error, int statusCode);
+	HttpResponse Redirect(const std::string& location);
 
 	HttpRequest request;
 };

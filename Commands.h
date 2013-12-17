@@ -27,6 +27,32 @@ namespace Commands
 		"	{0}\n"
 		")\n"
 		"returning id;\n";
+	const std::string DeleteGame =
+		"insert into deletedGame (\n"
+		"	id,\n"
+		"	playedWhen\n"
+		")\n"
+		"select	id,\n"
+		"	playedWhen\n"
+		"from	game\n"
+		"where	id = {0};\n"
+		"insert into deletedGamePlayer (\n"
+		"	gameId,\n"
+		"	playerId,\n"
+		"	score\n"
+		")\n"
+		"select	gameId,\n"
+		"	playerId,\n"
+		"	score\n"
+		"from	gamePlayer\n"
+		"where	gameId = {0};\n"
+		"delete	from gamePlayer\n"
+		"where	gameId = {0};\n"
+		"delete	from game\n"
+		"where	id = {0};\n";
+	const std::string DeleteGamePlayers =
+		"delete	from gamePlayer\n"
+		"where	gameId = {0};\n";
 	const std::string FindGamePlayer =
 		"select	score\n"
 		"from	gamePlayer\n"

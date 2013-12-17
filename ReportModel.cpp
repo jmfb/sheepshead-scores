@@ -1,5 +1,10 @@
 #include "ReportModel.h"
 
+ReportModel::ReportModel()
+	: canDelete(false), gameId(0)
+{
+}
+
 void ReportModel::SetTitle(const std::string& value)
 {
 	title = value;
@@ -8,6 +13,12 @@ void ReportModel::SetTitle(const std::string& value)
 void ReportModel::AddPlayerScore(const PlayerScoreModel& value)
 {
 	playerScores.push_back(value);
+}
+
+void ReportModel::SetGameId(int value)
+{
+	canDelete = true;
+	gameId = value;
 }
 
 const std::string& ReportModel::GetTitle() const
@@ -27,5 +38,15 @@ int ReportModel::GetPointSpread() const
 		if (playerScore.GetScore() > 0)
 			pointSpread += playerScore.GetScore();
 	return pointSpread;
+}
+
+bool ReportModel::CanDelete() const
+{
+	return canDelete;
+}
+
+int ReportModel::GetGameId() const
+{
+	return gameId;
 }
 

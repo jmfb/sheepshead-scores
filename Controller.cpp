@@ -31,6 +31,8 @@ HttpResponse Controller::Execute()
 		case HttpRequestMethod::Post:
 			if (IsAction("upload-scores"))
 				return UploadScores({});
+			else if (IsAction("delete-game"))
+				return DeleteGame(std::stoi(request.GetPostData()("gameId")));
 			return SubmitScores(PlayerScoreModel::LoadAll(request.GetPostData()));
 		}
 		return Error("HTTP request method not supported.", 400);
@@ -43,7 +45,8 @@ HttpResponse Controller::Execute()
 
 bool Controller::IsAction(const std::string& name) const
 {
-	return request.GetQueryString()("action") == name;
+	return request.GetQueryString()("action") == name ||
+		request.GetPostData()("action") == name;
 }
 
 HttpResponse Controller::Index()
@@ -144,5 +147,12 @@ HttpResponse Controller::UploadScores(const FileUploadData& fileUpload)
 		dataBridge.ReportScores(date, playerScores);
 	}
 	return View<SubmitScoresView>();
+}
+
+HttpResponse Controller::DeleteGame(int gameId)
+{
+	DataBridge dataBridge;
+	dataBridge.DeleteGame(gameId);
+	return Redirect("/sheepshead.cgi");
 }
 

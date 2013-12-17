@@ -12,9 +12,33 @@ void ReportsView::RenderBody_Layout()
 	Write(" ");
 	Write("<div class=\"well\">");
 	Write(" ");
-	Write("<h1>");
+	Write("<h1 style=\"float: left;\">");
 	Write(Html::EscapeHtml(report.GetTitle()));
 	Write("</h1>");
+	Write(" ");
+	if (report.CanDelete()) {
+	Write(" ");
+	Write("<form");
+	Write(" ");
+	Write("role=\"form\"");
+	Write(" ");
+	Write("action=\"/sheepshead.cgi\"");
+	Write(" ");
+	Write("method=\"post\"");
+	Write(" ");
+	Write("style=\"float: right; position: relative; top: 20px;\">");
+	Write(" ");
+	Write("<input type=\"hidden\" name=\"action\" value=\"delete-game\">");
+	Write(" ");
+	Write("<input type=\"hidden\" name=\"gameId\" value=\"");
+	Write(Html::EscapeHtml(report.GetGameId()));
+	Write("\">");
+	Write(" ");
+	Write("<button type=\"submit\" class=\"btn\">Delete</button>");
+	Write(" ");
+	Write("</form>");
+	Write(" ");
+	}
 	Write(" ");
 	Write("<table class=\"table table-striped\">");
 	Write(" ");

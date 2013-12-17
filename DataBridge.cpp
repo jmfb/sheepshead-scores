@@ -77,12 +77,21 @@ ReportsModel DataBridge::FindGames(int skip, int take)
 	{
 		ReportModel report;
 		report.SetTitle("Scores for " + game[1].as<std::string>() + ".");
-		auto results = command.Execute(Commands::LoadGame, game[0].as<int>());
+		auto gameId = game[0].as<int>();
+		report.SetGameId(gameId);
+		auto results = command.Execute(Commands::LoadGame, gameId);
 		auto playerScores = PlayerScoreModel::LoadAll(results, 0, 1);
 		for (auto playerScore : playerScores)
 			report.AddPlayerScore(playerScore);
 		reports.AddReport(report);
 	}
 	return reports;
+}
+
+void DataBridge::DeleteGame(int gameId)
+{
+	SqlCommand command;
+	command.Execute(Commands::DeleteGame, gameId);
+	command.Commit();
 }
 
