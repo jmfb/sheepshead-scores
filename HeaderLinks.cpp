@@ -39,6 +39,7 @@ std::vector<HeaderLink> GetHeaderLinks()
 		{ ViewType::UploadScores, "/sheepshead.cgi?action=upload-scores", "Upload" },
 		{ ViewType::ReportMTD, "/sheepshead.cgi?action=report-mtd", "MTD Scores" },
 		{ ViewType::ReportYTD, "/sheepshead.cgi?action=report-ytd", "YTD Scores" },
+		{ ViewType::ReportPlayer, "/sheepshead.cgi?action=report-player", "Player" },
 		{ ViewType::ReportHistory, "/sheepshead.cgi?action=report-history", "History" }
 	};
 }

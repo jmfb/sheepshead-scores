@@ -7,6 +7,7 @@ enum class ViewType
 	ReportMTD,
 	ReportYTD,
 	ReportHistory,
+	ReportPlayer,
 	Summary,
 	Error
 };

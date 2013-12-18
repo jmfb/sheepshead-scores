@@ -6,6 +6,7 @@
 #include "UploadScoresView.h"
 #include "MonthNavigationView.h"
 #include "YearNavigationView.h"
+#include "PlayerGamesView.h"
 #include "DataBridge.h"
 #include "JsonUtility.h"
 #include "DateUtility.h"
@@ -26,6 +27,10 @@ HttpResponse Controller::Execute()
 				return ReportYTD(request.GetQueryString()("date"));
 			else if (IsAction("report-history"))
 				return ReportHistory();
+			else if (IsAction("report-player"))
+				return ReportPlayer(
+					request.GetQueryString()("player"),
+					request.GetQueryString()("date"));
 			else if (IsAction("upload-scores"))
 				return UploadScores();
 			return Index();
@@ -107,6 +112,21 @@ HttpResponse Controller::ReportHistory()
 	auto reports = dataBridge.FindGames(0, 10);
 	reports.SetViewType(ViewType::ReportHistory);
 	return View<ReportsView>(reports);
+}
+
+HttpResponse Controller::ReportPlayer(const std::string& player, const std::string& date)
+{
+	PlayerGamesModel model;
+	model.SetPlayer(player);
+	model.SetDate(date.empty() ? Date::GetBeginningOfYear() : date);
+	if (!player.empty())
+	{
+		DataBridge dataBridge;
+		auto games = dataBridge.ReportPlayerGames(player, model.GetBeginningOfYear(), model.GetNextYear());
+		for (auto game : games)
+			model.AddGame(game);
+	}
+	return View<PlayerGamesView>(model);
 }
 
 HttpResponse Controller::UploadScores()

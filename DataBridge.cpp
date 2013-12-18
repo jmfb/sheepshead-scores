@@ -68,6 +68,19 @@ ReportModel DataBridge::ReportScoresSince(const std::string& since, const std::s
 	return report;
 }
 
+std::vector<PlayerGameModel> DataBridge::ReportPlayerGames(
+	const std::string& player,
+	const std::string& since,
+	const std::string& until)
+{
+	std::vector<PlayerGameModel> models;
+	SqlCommand command;
+	auto results = command.Execute(Commands::ScoreReportPlayer, player, since, until);
+	for (auto result : results)
+		models.push_back({ result[0].as<std::string>(), result[1].as<int>() });
+	return models;
+}
+
 ReportsModel DataBridge::FindGames(int skip, int take)
 {
 	SqlCommand command;

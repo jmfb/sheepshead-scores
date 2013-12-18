@@ -1,0 +1,81 @@
+@include HeaderView
+@layout Layout
+@model PlayerGamesModel
+@section Title { Player Scores }
+@section Scripts {
+	<script>
+		window.initialData = "@write model.GetPlayer();";
+	</script>
+	<script src="PlayerGamesCtrl.js"></script>
+}
+@section Header {
+	@html Partial<HeaderView>(ViewType::ReportPlayer);
+}
+<div ng-controller="PlayerGamesCtrl" ng-cloak>
+	<div style="height: 52px;">
+		<form
+			role="form"
+			action="/sheepshead.cgi"
+			method="get"
+			style="float: left;">
+			<input type="hidden" name="action" value="report-player">
+			<input type="hidden" name="player" value="{{player}}">
+			<input type="hidden" name="date" value="@write model.GetPreviousYear();">
+			<button type="submit" class="btn">Previous Year</button>
+		</form>
+		<form
+			role="form"
+			action="/sheepshead.cgi"
+			method="get"
+			style="float: right;">
+			<input type="hidden" name="action" value="report-player">
+			<input type="hidden" name="player" value="{{player}}">
+			<input type="hidden" name="date" value="@write model.GetNextYear();">
+			<button type="submit" class="btn">Next Year</button>
+		</form>
+	</div>
+	<div class="well">
+		<h2>Player Report -&nbsp; @write model.GetYear();</h2>
+		<form class="form-horizontal" role="form" action="/sheepshead.cgi" method="get">
+			<div class="form-group">
+				<div class="col-sm-3">
+					<input type="hidden" name="action" value="report-player">
+					<input
+						class="form-control"
+						type="text"
+						name="player"
+						ng-model="player"
+						placeholder="Name"
+						value="@write model.GetPlayer();">
+					<input type="hidden" name="date" value="@write model.GetBeginningOfYear();">
+				</div>
+				<div class="col-sm-3">
+					<button type="submit" class="btn btn-primary btn-default">Submit</button>
+				</div>
+			</div>
+		</form>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody>
+			@for (auto game : model.GetGames()) {
+				<tr>
+					<td>@write game.GetDate();</td>
+					<td>@write game.GetScore();</td>
+				</tr>
+			}
+			</tbody>
+			<tfoot>
+				<tr class="success">
+					<td>Total</td>
+					<td>@write model.GetScoreTotal();</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+

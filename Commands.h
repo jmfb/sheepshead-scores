@@ -96,6 +96,19 @@ namespace Commands
 		"group by player.name\n"
 		"order by 2 desc,\n"
 		"	1 asc;\n";
+	const std::string ScoreReportPlayer =
+		"select	game.playedWhen,\n"
+		"	gamePlayer.score\n"
+		"from	player\n"
+		"	inner join gamePlayer\n"
+		"	on	gamePlayer.playerId = player.id\n"
+		"	inner join game\n"
+		"	on	game.id = gamePlayer.gameId\n"
+		"where	player.name = {0}\n"
+		"and	game.playedWhen >= {1}\n"
+		"and	game.playedWhen < {2}\n"
+		"order by game.playedWhen desc,\n"
+		"	game.id desc;\n";
 	const std::string UpdateGamePlayer =
 		"update	gamePlayer\n"
 		"set	score = {0}\n"
