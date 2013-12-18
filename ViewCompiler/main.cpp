@@ -89,7 +89,8 @@ public:
 	{
 		std::ofstream out(name + "View.cpp");
 		out << "#include \"" << name << "View.h\"" << std::endl
-			<< "#include \"HtmlUtility.h\"" << std::endl;
+			<< "#include \"HtmlUtility.h\"" << std::endl
+			<< "#include \"JsonUtility.h\"" << std::endl;
 		for (auto include : includes)
 			out << "#include \"" << include << ".h\"" << std::endl;
 		out << std::endl;
@@ -255,6 +256,14 @@ private:
 		else if (directiveName == "@html")
 		{
 			section.push_back("Write(" + directive.substr(space + 1) + ");");
+		}
+		else if (directiveName == "@json")
+		{
+			section.push_back("Write(Json::ToJson(" + directive.substr(space + 1) + "));");
+		}
+		else if (directiveName == "@object")
+		{
+			section.push_back("Write(Json::ToObject(" + directive.substr(space + 1) + "));");
 		}
 		else if (directiveName == "@render")
 		{

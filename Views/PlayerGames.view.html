@@ -3,8 +3,11 @@
 @model PlayerGamesModel
 @section Title { Player Scores }
 @section Scripts {
+	<script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
 	<script>
-		window.initialData = "@write model.GetPlayer();";
+		window.player = "@write model.GetPlayer();";
+		window.graphData = @object model.GetGraph();;
+		window.graphOptions = @object model.GetGraphOptions();;
 	</script>
 	<script src="PlayerGamesCtrl.js"></script>
 }
@@ -36,6 +39,7 @@
 	</div>
 	<div class="well">
 		<h2>Player Report -&nbsp; @write model.GetYear();</h2>
+		<canvas id="playerChart" width="600" height="400"></canvas>
 		<form class="form-horizontal" role="form" action="/sheepshead.cgi" method="get">
 			<div class="form-group">
 				<div class="col-sm-3">

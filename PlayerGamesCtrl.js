@@ -8,6 +8,10 @@ app.controller('PlayerGamesCtrl', function ($scope) {
 				});
 		}
 	});
-	$scope.player = window.initialData;
+	
+	$scope.player = window.player;
+	
+	var context = document.getElementById("playerChart").getContext("2d");
+	var chart = new Chart(context).Line(window.graphData, window.graphOptions);
 });
 

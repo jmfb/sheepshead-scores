@@ -76,3 +76,50 @@ int PlayerGamesModel::GetScoreTotal() const
 	return scoreTotal;
 }
 
+GraphModel PlayerGamesModel::GetGraph() const
+{
+	GraphModel model;
+	GraphDataModel currentData;
+	currentData.SetColor(220, 220, 220);
+	GraphDataModel totalData;
+	totalData.SetColor(151, 187, 205);
+	auto totalScore = 0;
+	for (auto iter = games.rbegin(); iter != games.rend(); ++iter)
+	{
+		auto game = *iter;
+		model.AddLabel("");
+		auto score = game.GetScore();
+		currentData.AddData(score);
+		totalScore += score;
+		totalData.AddData(totalScore);
+	}
+	model.AddData(currentData);
+	model.AddData(totalData);
+	return model;
+}
+
+GraphOptionsModel PlayerGamesModel::GetGraphOptions() const
+{
+	auto minValue = 0;
+	auto maxValue = 0;
+	auto totalScore = 0;
+	for (auto iter = games.rbegin(); iter != games.rend(); ++iter)
+	{
+		auto game = *iter;
+		auto score = game.GetScore();
+		totalScore += score;
+		if (score < minValue)
+			minValue = score;
+		if (totalScore < minValue)
+			minValue = totalScore;
+		if (score > maxValue)
+			maxValue = score;
+		if (totalScore > maxValue)
+			maxValue = totalScore;
+	}
+	GraphOptionsModel model;
+	model.SetMinValue(minValue);
+	model.SetMaxValue(maxValue);
+	return model;	
+}
+

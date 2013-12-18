@@ -1,5 +1,7 @@
 #pragma once
 #include "PlayerGameModel.h"
+#include "GraphModel.h"
+#include "GraphOptionsModel.h"
 #include <string>
 #include <vector>
 
@@ -23,6 +25,8 @@ public:
 	const std::string& GetNextYear() const;
 	const std::vector<PlayerGameModel>& GetGames() const;
 	int GetScoreTotal() const;
+	GraphModel GetGraph() const;
+	GraphOptionsModel GetGraphOptions() const;
 	
 private:
 	std::string player;

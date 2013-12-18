@@ -1,5 +1,6 @@
 #include "PlayerGamesView.h"
 #include "HtmlUtility.h"
+#include "JsonUtility.h"
 #include "HeaderView.h"
 
 void PlayerGamesView::RenderBody_PlayerGames()
@@ -63,6 +64,8 @@ void PlayerGamesView::RenderBody_Layout()
 	Write("<h2>Player Report -&nbsp;");
 	Write(Html::EscapeHtml(model.GetYear()));
 	Write("</h2>");
+	Write(" ");
+	Write("<canvas id=\"playerChart\" width=\"600\" height=\"400\"></canvas>");
 	Write(" ");
 	Write("<form class=\"form-horizontal\" role=\"form\" action=\"/sheepshead.cgi\" method=\"get\">");
 	Write(" ");
@@ -172,11 +175,21 @@ void PlayerGamesView::RenderSection_Layout_Header()
 void PlayerGamesView::RenderSection_Layout_Scripts()
 {
 	Write(" ");
+	Write("<script src=\"//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js\"></script>");
+	Write(" ");
 	Write("<script>");
 	Write(" ");
-	Write("window.initialData = \"");
+	Write("window.player = \"");
 	Write(Html::EscapeHtml(model.GetPlayer()));
 	Write("\";");
+	Write(" ");
+	Write("window.graphData =");
+	Write(Json::ToObject(model.GetGraph()));
+	Write(";");
+	Write(" ");
+	Write("window.graphOptions =");
+	Write(Json::ToObject(model.GetGraphOptions()));
+	Write(";");
 	Write(" ");
 	Write("</script>");
 	Write(" ");

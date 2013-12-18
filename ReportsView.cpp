@@ -1,5 +1,6 @@
 #include "ReportsView.h"
 #include "HtmlUtility.h"
+#include "JsonUtility.h"
 #include "HeaderView.h"
 
 void ReportsView::RenderBody_Reports()
