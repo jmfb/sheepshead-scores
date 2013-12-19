@@ -11,16 +11,12 @@ echo Compiling commands...
 ls ./Commands/*.command.sql | ./CommandCompiler/CommandCompiler | head
 
 echo Building CGI...
-g++ -std=c++0x *.cpp -lpqxx -lpq -o /var/www/sheepshead.cgi 3>&1 1>&2 2>&3 3>&- | head
-
-#TODO: Minified Angular controller was not working.
-#echo Minifying Javascript...
-#java -jar /usr/share/yui-compressor/yui-compressor.jar -o '.js$:.min.js' *.js
+VAR_PWD=`pwd`
+g++ -std=c++0x -I$VAR_PWD -I./Models/ *.cpp ./Models/*.cpp -lpqxx -lpq -o /var/www/sheepshead.cgi 3>&1 1>&2 2>&3 3>&- | head
 
 echo Copying source files...
 rm -f /var/www/*.css
 rm -f /var/www/*.js
-cp *.ico /var/www/
-#mv *.min.js /var/www/
-cp *.js /var/www/
+cp ./Images/*.ico /var/www/
+cp ./Scripts/*.js /var/www/
 
