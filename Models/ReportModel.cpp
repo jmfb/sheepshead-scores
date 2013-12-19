@@ -50,3 +50,11 @@ int ReportModel::GetGameId() const
 	return gameId;
 }
 
+std::string ReportModel::ToJson() const
+{
+	return Json::Jsonify(
+		"title", title,
+		"playerScores", playerScores,
+		"pointSpread", GetPointSpread());
+}
+

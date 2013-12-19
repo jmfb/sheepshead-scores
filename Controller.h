@@ -19,6 +19,7 @@ private:
 	HttpResponse ReportMTD(const std::string& requestedDate);
 	HttpResponse ReportYTD(const std::string& requestedDate);
 	HttpResponse ReportHistory();
+	HttpResponse LoadHistory(int skip);
 	HttpResponse ReportPlayer(const std::string& player, const std::string& date);
 	HttpResponse UploadScores();
 	HttpResponse UploadScores(const FileUploadData& fileUpload);

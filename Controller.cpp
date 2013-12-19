@@ -27,6 +27,8 @@ HttpResponse Controller::Execute()
 				return ReportYTD(request.GetQueryString()("date"));
 			else if (IsAction("report-history"))
 				return ReportHistory();
+			else if (IsAction("load-history"))
+				return LoadHistory(std::stoi(request.GetQueryString()("skip")));
 			else if (IsAction("report-player"))
 				return ReportPlayer(
 					request.GetQueryString()("player"),
@@ -111,7 +113,15 @@ HttpResponse Controller::ReportHistory()
 	DataBridge dataBridge;
 	auto reports = dataBridge.FindGames(0, 10);
 	reports.SetViewType(ViewType::ReportHistory);
+	reports.SetInfiniteScroll(true);
 	return View<ReportsView>(reports);
+}
+
+HttpResponse Controller::LoadHistory(int skip)
+{
+	DataBridge dataBridge;
+	auto reports = dataBridge.FindGames(skip, 10);
+	return Json::Content(reports);
 }
 
 HttpResponse Controller::ReportPlayer(const std::string& player, const std::string& date)

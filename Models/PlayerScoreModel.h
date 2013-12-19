@@ -1,10 +1,11 @@
 #pragma once
 #include "FormData.h"
+#include "JsonUtility.h"
 #include <string>
 #include <vector>
 #include <pqxx/pqxx>
 
-class PlayerScoreModel
+class PlayerScoreModel : public Json::IWriter
 {
 public:
 	PlayerScoreModel();
@@ -25,6 +26,8 @@ public:
 	
 	static std::vector<PlayerScoreModel> LoadAll(pqxx::result& results, int nameIndex, int scoreIndex);
 	static std::vector<PlayerScoreModel> LoadAll(const FormData& formData);
+	
+	std::string ToJson() const;
 	
 private:
 	std::string name;

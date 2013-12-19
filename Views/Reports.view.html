@@ -2,6 +2,11 @@
 @layout Layout
 @model ReportsModel
 @section Title { Sheepshead Scores }
+@section Scripts {
+	@if (model.InfiniteScroll()) {
+		<script src="ScrollHistoryCtrl.js"></script>
+	}
+}
 @section Header {
 	@html Partial<HeaderView>(model.GetViewType());
 }
@@ -42,6 +47,42 @@
 				</tr>
 			</tfoot>
 		</table>
+	</div>
+}
+@if (model.InfiniteScroll()) {
+	<div ng-controller="ScrollHistoryCtrl" style="overflow: auto;" when-scrolled="loadMore()">
+		<div class="well" ng-repeat="report in reports">
+			<h1 style="float: left;">{{report.title}}</h1>
+			<form
+				role="form"
+				action="/sheepshead.cgi"
+				method="post"
+				style="float: right; position: relative; top: 20px;">
+				<input type="hidden" name="action" value="delete-game">
+				<input type="hidden" name="gameId" value="{{report.gameId}}">
+				<button type="submit" class="btn">Delete</button>
+			</form>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Player</th>
+						<th>Score</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="playerScore in report.playerScores">
+						<td>{{playerScore.name}}</td>
+						<td>{{playerScore.score}}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr class="success">
+						<td>P.S.</td>
+						<td>{{report.pointSpread}}</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
 	</div>
 }
 

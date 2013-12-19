@@ -62,3 +62,10 @@ std::vector<PlayerScoreModel> PlayerScoreModel::LoadAll(const FormData& formData
 	return playerScores;
 }
 
+std::string PlayerScoreModel::ToJson() const
+{
+	return Json::Jsonify(
+		"name", name,
+		"score", score);
+}
+

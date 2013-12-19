@@ -97,6 +97,78 @@ void ReportsView::RenderBody_Layout()
 	Write(" ");
 	}
 	Write(" ");
+	if (model.InfiniteScroll()) {
+	Write(" ");
+	Write("<div ng-controller=\"ScrollHistoryCtrl\" style=\"overflow: auto;\" when-scrolled=\"loadMore()\">");
+	Write(" ");
+	Write("<div class=\"well\" ng-repeat=\"report in reports\">");
+	Write(" ");
+	Write("<h1 style=\"float: left;\">{{report.title}}</h1>");
+	Write(" ");
+	Write("<form");
+	Write(" ");
+	Write("role=\"form\"");
+	Write(" ");
+	Write("action=\"/sheepshead.cgi\"");
+	Write(" ");
+	Write("method=\"post\"");
+	Write(" ");
+	Write("style=\"float: right; position: relative; top: 20px;\">");
+	Write(" ");
+	Write("<input type=\"hidden\" name=\"action\" value=\"delete-game\">");
+	Write(" ");
+	Write("<input type=\"hidden\" name=\"gameId\" value=\"{{report.gameId}}\">");
+	Write(" ");
+	Write("<button type=\"submit\" class=\"btn\">Delete</button>");
+	Write(" ");
+	Write("</form>");
+	Write(" ");
+	Write("<table class=\"table table-striped\">");
+	Write(" ");
+	Write("<thead>");
+	Write(" ");
+	Write("<tr>");
+	Write(" ");
+	Write("<th>Player</th>");
+	Write(" ");
+	Write("<th>Score</th>");
+	Write(" ");
+	Write("</tr>");
+	Write(" ");
+	Write("</thead>");
+	Write(" ");
+	Write("<tbody>");
+	Write(" ");
+	Write("<tr ng-repeat=\"playerScore in report.playerScores\">");
+	Write(" ");
+	Write("<td>{{playerScore.name}}</td>");
+	Write(" ");
+	Write("<td>{{playerScore.score}}</td>");
+	Write(" ");
+	Write("</tr>");
+	Write(" ");
+	Write("</tbody>");
+	Write(" ");
+	Write("<tfoot>");
+	Write(" ");
+	Write("<tr class=\"success\">");
+	Write(" ");
+	Write("<td>P.S.</td>");
+	Write(" ");
+	Write("<td>{{report.pointSpread}}</td>");
+	Write(" ");
+	Write("</tr>");
+	Write(" ");
+	Write("</tfoot>");
+	Write(" ");
+	Write("</table>");
+	Write(" ");
+	Write("</div>");
+	Write(" ");
+	Write("</div>");
+	Write(" ");
+	}
+	Write(" ");
 	Write(" ");
 }
 
@@ -104,6 +176,18 @@ void ReportsView::RenderSection_Layout_Header()
 {
 	Write(" ");
 	Write(Partial<HeaderView>(model.GetViewType()));
+	Write(" ");
+	Write(" ");
+}
+
+void ReportsView::RenderSection_Layout_Scripts()
+{
+	Write(" ");
+	if (model.InfiniteScroll()) {
+	Write(" ");
+	Write("<script src=\"ScrollHistoryCtrl.js\"></script>");
+	Write(" ");
+	}
 	Write(" ");
 	Write(" ");
 }

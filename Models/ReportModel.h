@@ -1,9 +1,10 @@
 #pragma once
 #include "PlayerScoreModel.h"
+#include "JsonUtility.h"
 #include <string>
 #include <vector>
 
-class ReportModel
+class ReportModel : public Json::IWriter
 {
 public:
 	ReportModel();
@@ -21,6 +22,8 @@ public:
 	int GetPointSpread() const;
 	bool CanDelete() const;
 	int GetGameId() const;
+	
+	std::string ToJson() const;
 	
 private:
 	std::string title;
