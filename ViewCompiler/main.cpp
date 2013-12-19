@@ -46,7 +46,7 @@ public:
 	
 	void WriteHeader() const
 	{
-		std::ofstream out(name + "View.h");
+		std::ofstream out("./Generated/" + name + "View.h");
 		out << "#pragma once" << std::endl;
 		auto baseView = layout.empty() ? "BaseView" : layout + "View";
 		out << "#include \"" << baseView << ".h\"" << std::endl;
@@ -87,7 +87,7 @@ public:
 	
 	void WriteSource() const
 	{
-		std::ofstream out(name + "View.cpp");
+		std::ofstream out("./Generated/" + name + "View.cpp");
 		out << "#include \"" << name << "View.h\"" << std::endl
 			<< "#include \"HtmlUtility.h\"" << std::endl
 			<< "#include \"JsonUtility.h\"" << std::endl;

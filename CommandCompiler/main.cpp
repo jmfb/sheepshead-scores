@@ -18,7 +18,7 @@ std::string FormatLine(const std::string& value)
 int main()
 {
 	std::string fileName;
-	std::ofstream out("Commands.h");
+	std::ofstream out("./Generated/Commands.h");
 	out << "#pragma once" << std::endl
 		<< "#include <string>" << std::endl
 		<< std::endl

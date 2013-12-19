@@ -12,7 +12,7 @@ ls ./Commands/*.command.sql | ./CommandCompiler/CommandCompiler | head
 
 echo Building CGI...
 VAR_PWD=`pwd`
-g++ -std=c++0x -I$VAR_PWD -I./Models/ *.cpp ./Models/*.cpp -lpqxx -lpq -o /var/www/sheepshead.cgi 3>&1 1>&2 2>&3 3>&- | head
+g++ -std=c++0x -I$VAR_PWD -I./Models/ -I./Generated/ *.cpp ./Models/*.cpp ./Generated/*.cpp -lpqxx -lpq -o /var/www/sheepshead.cgi 3>&1 1>&2 2>&3 3>&- | head
 
 echo Copying source files...
 rm -f /var/www/*.css
