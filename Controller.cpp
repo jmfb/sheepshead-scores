@@ -77,8 +77,8 @@ HttpResponse Controller::SubmitScores(const std::vector<PlayerScoreModel>& playe
 	DataBridge dataBridge;
 	auto today = Date::GetToday();
 	reports.AddReport(dataBridge.ReportScores(today, playerScores));
-	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), today, "MTD Totals"));
-	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), today, "YTD Totals"));
+	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), "3000-01-01", "MTD Totals"));
+	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), "3000-01-01", "YTD Totals"));
 	return View<ReportsView>(reports);
 }
 

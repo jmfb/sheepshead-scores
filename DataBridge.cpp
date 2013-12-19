@@ -30,7 +30,7 @@ NameLookupModel DataBridge::LookupNames(const std::string& query)
 {
 	const auto maximumResults = 5;
 	SqlCommand command;
-	auto results = command.Execute(Commands::NameLookup, "%" + String::ToLower(query) + "%", maximumResults);
+	auto results = command.Execute(Commands::NameLookup, "%" + query + "%", maximumResults);
 	NameLookupModel model;
 	for (auto result : results)
 		model.AddName(result[0].as<std::string>());

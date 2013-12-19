@@ -1,4 +1,3 @@
 select	id
 from	player
-where	name = {0};
-
+where	lower(name) = lower({0});
