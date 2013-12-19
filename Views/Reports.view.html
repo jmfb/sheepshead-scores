@@ -35,7 +35,7 @@
 			<tbody>
 			@for (auto playerScore : report.GetPlayerScores()) {
 				<tr>
-					<td><a href="/sheepshead.cgi?action=report-player&name=@write playerScore.GetName();">@write playerScore.GetName();</a></td>
+					<td><a href="/sheepshead.cgi?action=report-player&player=@write playerScore.GetName();">@write playerScore.GetName();</a></td>
 					<td>@write playerScore.GetScore();</td>
 				</tr>
 			}
@@ -71,7 +71,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="playerScore in report.playerScores">
-						<td><a href="/sheepshead.cgi?action=report-player&name={{playerScore.name}}">{{playerScore.name}}</a></td>
+						<td><a href="/sheepshead.cgi?action=report-player&player={{playerScore.name}}">{{playerScore.name}}</a></td>
 						<td>{{playerScore.score}}</td>
 					</tr>
 				</tbody>

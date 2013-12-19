@@ -66,7 +66,7 @@ namespace Commands
 	const std::string FindPlayer =
 		"select	id\n"
 		"from	player\n"
-		"where	name = {0};\n";
+		"where	lower(name) = lower({0});\n";
 	const std::string LoadGame =
 		"select	player.name,\n"
 		"	gamePlayer.score\n"
@@ -80,7 +80,7 @@ namespace Commands
 		"select	name\n"
 		"from	player\n"
 		"where	lower(name)\n"
-		"like	{0}\n"
+		"like	lower({0})\n"
 		"order by name\n"
 		"limit	{1};\n";
 	const std::string ScoreReport =
@@ -104,7 +104,7 @@ namespace Commands
 		"	on	gamePlayer.playerId = player.id\n"
 		"	inner join game\n"
 		"	on	game.id = gamePlayer.gameId\n"
-		"where	player.name = {0}\n"
+		"where	lower(player.name) = lower({0})\n"
 		"and	game.playedWhen >= {1}\n"
 		"and	game.playedWhen < {2}\n"
 		"order by game.playedWhen desc,\n"

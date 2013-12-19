@@ -63,9 +63,11 @@ void ReportsView::RenderBody_Layout()
 	Write(" ");
 	Write("<tr>");
 	Write(" ");
-	Write("<td>");
+	Write("<td><a href=\"/sheepshead.cgi?action=report-player&player=");
 	Write(Html::EscapeHtml(playerScore.GetName()));
-	Write("</td>");
+	Write("\">");
+	Write(Html::EscapeHtml(playerScore.GetName()));
+	Write("</a></td>");
 	Write(" ");
 	Write("<td>");
 	Write(Html::EscapeHtml(playerScore.GetScore()));
@@ -141,7 +143,7 @@ void ReportsView::RenderBody_Layout()
 	Write(" ");
 	Write("<tr ng-repeat=\"playerScore in report.playerScores\">");
 	Write(" ");
-	Write("<td>{{playerScore.name}}</td>");
+	Write("<td><a href=\"/sheepshead.cgi?action=report-player&player={{playerScore.name}}\">{{playerScore.name}}</a></td>");
 	Write(" ");
 	Write("<td>{{playerScore.score}}</td>");
 	Write(" ");

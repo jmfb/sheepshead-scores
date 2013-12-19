@@ -20,6 +20,8 @@ std::string GraphOptionsModel::ToObject() const
 	const auto steps = 20;
 	auto range = maxValue - minValue;
 	auto increment = (range + steps - 1) / steps;
+	if (increment < 1)
+		increment = 1;
 	return Json::JsonifyObject(
 		"scaleOverride", true,
 		"scaleSteps", steps,
