@@ -20,12 +20,17 @@ namespace Json
 	
 	inline std::string ToJson(int value)
 	{
-		return "\"" + std::to_string(value) + "\"";
+		return std::to_string(value);
 	}
 	
 	inline std::string ToObject(int value)
 	{
 		return std::to_string(value);
+	}
+	
+	inline std::string ToJson(bool value)
+	{
+		return value ? "true" : "false";
 	}
 	
 	inline std::string ToObject(bool value)
