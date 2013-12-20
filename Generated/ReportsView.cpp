@@ -64,7 +64,7 @@ void ReportsView::RenderBody_Layout()
 	Write("<tr>");
 	Write(" ");
 	Write("<td><a href=\"/sheepshead.cgi?action=report-player&player=");
-	Write(Html::EscapeHtml(playerScore.GetName()));
+	Write(Html::UrlEncode(playerScore.GetName()));
 	Write("\">");
 	Write(Html::EscapeHtml(playerScore.GetName()));
 	Write("</a></td>");
@@ -143,7 +143,7 @@ void ReportsView::RenderBody_Layout()
 	Write(" ");
 	Write("<tr ng-repeat=\"playerScore in report.playerScores\">");
 	Write(" ");
-	Write("<td><a href=\"/sheepshead.cgi?action=report-player&player={{playerScore.name}}\">{{playerScore.name}}</a></td>");
+	Write("<td><a href=\"/sheepshead.cgi?action=report-player&player={{encodeURIComponent(playerScore.name)}}\">{{playerScore.name}}</a></td>");
 	Write(" ");
 	Write("<td>{{playerScore.score}}</td>");
 	Write(" ");

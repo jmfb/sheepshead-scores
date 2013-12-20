@@ -265,6 +265,10 @@ private:
 		{
 			section.push_back("Write(Json::ToObject(" + directive.substr(space + 1) + "));");
 		}
+		else if (directiveName == "@url")
+		{
+			section.push_back("Write(Html::UrlEncode(" + directive.substr(space + 1) + "));");
+		}
 		else if (directiveName == "@render")
 		{
 			auto sectionName = directive.substr(space + 1);
