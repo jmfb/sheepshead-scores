@@ -11,8 +11,17 @@
 #include "JsonUtility.h"
 #include "DateUtility.h"
 #include "StringUtility.h"
+#include "Debug.h"
 
 HttpResponse Controller::Execute()
+{
+	auto response = InternalExecute();
+	if (Debug::GetInstance().HasMessages())
+		return { "application/json", Json::Jsonify("messages", Debug::GetInstance().GetMessages()) };
+	return response;
+}
+
+HttpResponse Controller::InternalExecute()
 {
 	try
 	{

@@ -38,7 +38,10 @@ PlayerScoreModel PlayerScoreModel::Load(pqxx::result::tuple& result, int nameInd
 PlayerScoreModel PlayerScoreModel::Load(const FormData& formData, int number)
 {
 	auto player = "player" + std::to_string(number);
-	return { formData(player + "Name"), std::stoi(formData(player + "Score")) };
+	auto playerName = formData(player + "Name");
+	auto playerScoreString = formData(player + "Score");
+	
+	return { playerName, std::stoi(playerScoreString) };
 }
 
 std::vector<PlayerScoreModel> PlayerScoreModel::LoadAll(pqxx::result& results, int nameIndex, int scoreIndex)
@@ -52,7 +55,10 @@ std::vector<PlayerScoreModel> PlayerScoreModel::LoadAll(pqxx::result& results, i
 std::vector<PlayerScoreModel> PlayerScoreModel::LoadAll(const FormData& formData)
 {
 	std::vector<PlayerScoreModel> playerScores;
-	auto playerCount = std::stoi(formData("playerCount"));
+	
+	auto playerCountString = formData("playerCount");
+	auto playerCount = std::stoi(playerCountString);
+	
 	for (auto number = 0; number < playerCount; ++number)
 	{
 		auto playerScore = Load(formData, number);

@@ -13,6 +13,8 @@ public:
 private:
 	bool IsAction(const std::string& name) const;
 
+	HttpResponse InternalExecute();
+
 	HttpResponse Index();
 	HttpResponse LookupNames(const std::string& query);
 	HttpResponse SubmitScores(const std::vector<PlayerScoreModel>& playerScores);
