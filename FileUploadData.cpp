@@ -29,8 +29,8 @@ FileUploadData::FileUploadData()
 		return;
 
 	std::vector<char> buffer(contentLength);
-	std::fread(buffer.data(), sizeof(char), contentLength, stdin);
-	std::istringstream in(buffer.data());
+	auto bytesRead = std::fread(buffer.data(), sizeof(char), contentLength, stdin);
+	std::istringstream in({ buffer.data(), bytesRead });
 	std::string line;
 	auto foundStart = false;
 	auto foundContentDisposition = false;

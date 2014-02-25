@@ -22,8 +22,8 @@ std::string GetFormPostData()
 	if (contentLength < 1 || !IsContentTypeFormPostData())
 		return {};
 	std::vector<char> buffer(contentLength);
-	std::fread(buffer.data(), sizeof(char), contentLength, stdin);
-	return buffer.data();
+	auto bytesRead = std::fread(buffer.data(), sizeof(char), contentLength, stdin);
+	return { buffer.data(), bytesRead };
 }
 
 PostData::PostData()
