@@ -1,10 +1,14 @@
 insert into gamePlayer (
 	gameId,
 	playerId,
-	score
-) values (
-	{0},
+	score,
+	seatingOrder
+)
+select	{0},
 	{1},
-	{2}
-);
+	{2},
+	coalesce(max(seatingOrder) + 1, 0)
+from	gamePlayer
+where	gameId = {0}
+and	seatingOrder is not null;
 

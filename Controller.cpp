@@ -11,7 +11,9 @@
 #include "JsonUtility.h"
 #include "DateUtility.h"
 #include "StringUtility.h"
+#include "HandModel.h"
 #include "Debug.h"
+#include "HttpContext.h"
 
 HttpResponse Controller::Execute()
 {
@@ -51,6 +53,8 @@ HttpResponse Controller::InternalExecute()
 				return UploadScores({});
 			else if (IsAction("delete-game"))
 				return DeleteGame(std::stoi(request.GetPostData()("gameId")));
+			else if (IsAction("submit-hands"))
+				return SubmitHands();
 			return SubmitScores(PlayerScoreModel::LoadAll(request.GetPostData()));
 		}
 		return Error("HTTP request method not supported.", 400);
@@ -86,6 +90,28 @@ HttpResponse Controller::SubmitScores(const std::vector<PlayerScoreModel>& playe
 	DataBridge dataBridge;
 	auto today = Date::GetToday();
 	reports.AddReport(dataBridge.ReportScores(today, playerScores));
+	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), "3000-01-01", "MTD Totals"));
+	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), "3000-01-01", "YTD Totals"));
+	return View<ReportsView>(reports);
+}
+
+HttpResponse Controller::SubmitHands()
+{
+	ReportsModel reports;
+	reports.SetViewType(ViewType::Summary);
+	DataBridge dataBridge;
+	auto today = Date::GetToday();
+	
+	auto json = request.GetJsonData().GetJson();
+	std::vector<std::string> playerNames;
+	for (auto playerName : json["playerNames"])
+		playerNames.push_back(playerName.asString());
+	std::vector<HandModel> hands;
+	for (auto hand : json["hands"])
+		hands.push_back({ hand });
+
+	auto gameReport = dataBridge.ReportHands(today, playerNames, hands);
+	reports.AddReport(gameReport);
 	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfMonth(), "3000-01-01", "MTD Totals"));
 	reports.AddReport(dataBridge.ReportScoresSince(Date::GetBeginningOfYear(), "3000-01-01", "YTD Totals"));
 	return View<ReportsView>(reports);

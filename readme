@@ -38,6 +38,7 @@ createuser "www-data"
 exit
 createdb sheepshead
 psql -d sheepshead -f install.sql
+psql -d sheepshead -f install2.sql
 
 Getting latest version/building
 ===============================

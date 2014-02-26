@@ -33,3 +33,8 @@ const PostData& HttpRequest::GetPostData() const
 	return postData;
 }
 
+const JsonPostData& HttpRequest::GetJsonData() const
+{
+	return jsonData;
+}
+

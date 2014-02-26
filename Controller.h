@@ -18,6 +18,7 @@ private:
 	HttpResponse Index();
 	HttpResponse LookupNames(const std::string& query);
 	HttpResponse SubmitScores(const std::vector<PlayerScoreModel>& playerScores);
+	HttpResponse SubmitHands();
 	HttpResponse ReportMTD(const std::string& requestedDate);
 	HttpResponse ReportYTD(const std::string& requestedDate);
 	HttpResponse ReportHistory();
