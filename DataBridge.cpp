@@ -53,14 +53,8 @@ void CreateHand(SqlCommand& command, int gameId, const std::vector<int>& playerI
 		command.Execute(
 			Commands::CreateHandLeasterScore,
 			handId,
-			playerIds[hand.GetScore().leasterScore.winnerPlayerIndex]);
-		break;
-	case HandType::TiedLeaster:
-		command.Execute(
-			Commands::CreateHandTiedLeasterScore,
-			handId,
-			playerIds[hand.GetScore().tiedLeasterScore.primaryPlayerIndex],
-			playerIds[hand.GetScore().tiedLeasterScore.secondaryPlayerIndex]);
+			playerIds[hand.GetScore().leasterScore.primaryPlayerIndex],
+			playerIds[hand.GetScore().leasterScore.secondaryPlayerIndex]);
 		break;
 	case HandType::Misplay:
 		command.Execute(

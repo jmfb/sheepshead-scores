@@ -1,8 +1,10 @@
 insert into handLeasterScore (
 	handId,
-	winnerPlayerId
+	primaryPlayerId,
+	secondaryPlayerId
 ) values (
 	{0},
-	{1}
+	{1},
+	{2}
 );
 

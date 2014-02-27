@@ -14,8 +14,7 @@ create table handScoreType
 
 insert into handScoreType (handType, description) values (1, 'normal');
 insert into handScoreType (handType, description) values (2, 'leaster');
-insert into handScoreType (handType, description) values (3, 'tied leaster');
-insert into handScoreType (handType, description) values (4, 'misplay');
+insert into handScoreType (handType, description) values (3, 'misplay');
 
 create table hand
 (
@@ -72,21 +71,12 @@ create table handNormalScore
 create table handLeasterScore
 (
 	handId int not null,
-	winnerPlayerId int not null,
-	constraint pk_handLeasterScore primary key (handId),
-	constraint fk_handLeasterScore_handId foreign key (handId) references hand (id),
-	constraint fk_handLeasterScore_winnerPlayerId foreign key (winnerPlayerId) references player (id)
-);
-
-create table handTiedLeasterScore
-(
-	handId int not null,
 	primaryPlayerId int not null,
 	secondaryPlayerId int not null,
-	constraint pk_handTiedLeasterScore primary key (handId),
-	constraint fk_handTiedLeasterScore_handId foreign key (handId) references hand (id),
-	constraint fk_handTiedLeasterScore_primaryPlayerId foreign key (primaryPlayerId) references player (id),
-	constraint fk_handTiedLeasterScore_secondaryPlayerId foreign key (secondaryPlayerId) references player (id)
+	constraint pk_handLeasterScore primary key (handId),
+	constraint fk_handLeasterScore_handId foreign key (handId) references hand (id),
+	constraint fk_handLeasterScore_primaryPlayerId foreign key (primaryPlayerId) references player (id),
+	constraint fk_handLeasterScore_secondaryPlayerId foreign key (secondaryPlayerId) references player (id)
 );
 
 create table handMisplayScore

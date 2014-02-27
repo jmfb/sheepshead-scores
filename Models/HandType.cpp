@@ -7,8 +7,6 @@ HandType ParseHandType(const std::string& value)
 		return HandType::Normal;
 	if (value == "leaster")
 		return HandType::Leaster;
-	if (value == "tiedLeaster")
-		return HandType::TiedLeaster;
 	if (value == "misplay")
 		return HandType::Misplay;
 	throw std::runtime_error("invalid handType: " + value);

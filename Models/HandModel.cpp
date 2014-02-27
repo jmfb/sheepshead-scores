@@ -21,11 +21,8 @@ HandModel::HandModel(Json::Value& value)
 		score.normalScore.partnerPlayerIndex = scoreValue["partnerPlayerIndex"].asInt();
 		break;
 	case HandType::Leaster:
-		score.leasterScore.winnerPlayerIndex = scoreValue["winnerPlayerIndex"].asInt();
-		break;
-	case HandType::TiedLeaster:
-		score.tiedLeasterScore.primaryPlayerIndex = scoreValue["primaryPlayerIndex"].asInt();
-		score.tiedLeasterScore.secondaryPlayerIndex = scoreValue["secondaryPlayerIndex"].asInt();
+		score.leasterScore.primaryPlayerIndex = scoreValue["primaryPlayerIndex"].asInt();
+		score.leasterScore.secondaryPlayerIndex = scoreValue["secondaryPlayerIndex"].asInt();
 		break;
 	case HandType::Misplay:
 		score.misplayScore.loserPlayerIndex = scoreValue["loserPlayerIndex"].asInt();
@@ -83,11 +80,8 @@ void HandModel::Validate(int maxPlayerIndex) const
 		ValidatePlayerInHand(score.normalScore.partnerPlayerIndex, "Partner", maxPlayerIndex);
 		break;
 	case HandType::Leaster:
-		ValidatePlayerInHand(score.leasterScore.winnerPlayerIndex, "Winer", maxPlayerIndex);
-		break;
-	case HandType::TiedLeaster:
-		ValidatePlayerInHand(score.tiedLeasterScore.primaryPlayerIndex, "Primary", maxPlayerIndex);
-		ValidatePlayerInHand(score.tiedLeasterScore.secondaryPlayerIndex, "Secondary", maxPlayerIndex);
+		ValidatePlayerInHand(score.leasterScore.primaryPlayerIndex, "Primary", maxPlayerIndex);
+		ValidatePlayerInHand(score.leasterScore.secondaryPlayerIndex, "Secondary", maxPlayerIndex);
 		break;
 	case HandType::Misplay:
 		ValidatePlayerInHand(score.misplayScore.loserPlayerIndex, "Loser", maxPlayerIndex);
@@ -113,13 +107,11 @@ std::vector<HandScoreModel> HandModel::GetScores() const
 		break;
 	case HandType::Leaster:
 		for (auto playerIndex : playerIndices)
-			scores[playerIndex] = (playerIndex == score.leasterScore.winnerPlayerIndex ? 4 : -1);
-		break;
-	case HandType::TiedLeaster:
-		for (auto playerIndex : playerIndices)
 			scores[playerIndex] = (
-				playerIndex == score.tiedLeasterScore.primaryPlayerIndex ? 2 :
-				playerIndex == score.tiedLeasterScore.secondaryPlayerIndex ? 1 : -1);
+				playerIndex == score.leasterScore.primaryPlayerIndex &&
+				playerIndex == score.leasterScore.secondaryPlayerIndex ? 4 :
+				playerIndex == score.leasterScore.primaryPlayerIndex ? 2 :
+				playerIndex == score.leasterScore.secondaryPlayerIndex ? 1 : -1);
 		break;
 	case HandType::Misplay:
 		for (auto playerIndex : playerIndices)

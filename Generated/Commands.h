@@ -40,10 +40,12 @@ namespace Commands
 	const std::string CreateHandLeasterScore =
 		"insert into handLeasterScore (\n"
 		"	handId,\n"
-		"	winnerPlayerId\n"
+		"	primaryPlayerId,\n"
+		"	secondaryPlayerId\n"
 		") values (\n"
 		"	{0},\n"
-		"	{1}\n"
+		"	{1},\n"
+		"	{2}\n"
 		");\n";
 	const std::string CreateHandMisplayScore =
 		"insert into handMisplayScore (\n"
@@ -75,16 +77,6 @@ namespace Commands
 		"	{0},\n"
 		"	{1}\n"
 		");\n";
-	const std::string CreateHandTiedLeasterScore =
-		"insert into handTiedLeasterScore (\n"
-		"	handId,\n"
-		"	primaryPlayerId,\n"
-		"	secondaryPlayerId\n"
-		") values (\n"
-		"	{0},\n"
-		"	{1},\n"
-		"	{2}\n"
-		");\n";
 	const std::string CreatePlayer =
 		"insert into player (\n"
 		"	name\n"
@@ -94,10 +86,6 @@ namespace Commands
 		"returning id;\n";
 	const std::string DeleteGame =
 		"delete	from handMisplayScore\n"
-		"using	hand\n"
-		"where	handId = hand.id\n"
-		"and	hand.gameId = {0};\n"
-		"delete	from handTiedLeasterScore\n"
 		"using	hand\n"
 		"where	handId = hand.id\n"
 		"and	hand.gameId = {0};\n"

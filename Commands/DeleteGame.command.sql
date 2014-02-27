@@ -3,11 +3,6 @@ using	hand
 where	handId = hand.id
 and	hand.gameId = {0};
 
-delete	from handTiedLeasterScore
-using	hand
-where	handId = hand.id
-and	hand.gameId = {0};
-
 delete	from handLeasterScore
 using	hand
 where	handId = hand.id

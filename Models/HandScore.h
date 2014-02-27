@@ -11,13 +11,9 @@ union HandScore
 	} normalScore;
 	struct
 	{
-		int winnerPlayerIndex;
-	} leasterScore;
-	struct
-	{
 		int primaryPlayerIndex;
 		int secondaryPlayerIndex;
-	} tiedLeasterScore;
+	} leasterScore;
 	struct
 	{
 		int loserPlayerIndex;
