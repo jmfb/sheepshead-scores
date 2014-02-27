@@ -28,7 +28,7 @@ void UpdateGamePlayerScore(SqlCommand& command, int gameId, int playerId, int sc
 
 void CreateHand(SqlCommand& command, int gameId, const std::vector<int>& playerIds, const HandModel& hand)
 {
-	auto leadPlayerId = playerIds[hand.GetPlayerIndices().front()];
+	auto leadPlayerId = playerIds[hand.GetLeadPlayerIndex()];
 	auto results = command.Execute(
 		Commands::CreateHand,
 		gameId,

@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseController.h"
 #include "PlayerScoreModel.h"
+#include "HandsModel.h"
 #include "FileUploadData.h"
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@ private:
 	HttpResponse Index();
 	HttpResponse LookupNames(const std::string& query);
 	HttpResponse SubmitScores(const std::vector<PlayerScoreModel>& playerScores);
-	HttpResponse SubmitHands();
+	HttpResponse SubmitHands(const HandsModel& handsModel);
 	HttpResponse ReportMTD(const std::string& requestedDate);
 	HttpResponse ReportYTD(const std::string& requestedDate);
 	HttpResponse ReportHistory();
