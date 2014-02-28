@@ -21,8 +21,14 @@ HandModel::HandModel(Json::Value& value)
 		score.normalScore.partnerPlayerIndex = scoreValue["partnerPlayerIndex"].asInt();
 		break;
 	case HandType::Leaster:
-		score.leasterScore.primaryPlayerIndex = scoreValue["primaryPlayerIndex"].asInt();
-		score.leasterScore.secondaryPlayerIndex = scoreValue["secondaryPlayerIndex"].asInt();
+		{
+			score.leasterScore.primaryPlayerIndex = scoreValue["primaryPlayerIndex"].asInt();
+			auto secondaryPlayerIndex = scoreValue["secondaryPlayerIndex"];
+			if (secondaryPlayerIndex.isNull())
+				score.leasterScore.secondaryPlayerIndex = nullptr;
+			else
+				score.leasterScore.secondaryPlayerIndex = secondaryPlayerIndex.asInt();
+		}
 		break;
 	case HandType::Misplay:
 		score.misplayScore.loserPlayerIndex = scoreValue["loserPlayerIndex"].asInt();
@@ -81,7 +87,8 @@ void HandModel::Validate(int maxPlayerIndex) const
 		break;
 	case HandType::Leaster:
 		ValidatePlayerInHand(score.leasterScore.primaryPlayerIndex, "Primary", maxPlayerIndex);
-		ValidatePlayerInHand(score.leasterScore.secondaryPlayerIndex, "Secondary", maxPlayerIndex);
+		if (score.leasterScore.secondaryPlayerIndex != nullptr)
+			ValidatePlayerInHand(score.leasterScore.secondaryPlayerIndex.GetValue(), "Secondary", maxPlayerIndex);
 		break;
 	case HandType::Misplay:
 		ValidatePlayerInHand(score.misplayScore.loserPlayerIndex, "Loser", maxPlayerIndex);
@@ -109,9 +116,10 @@ std::vector<HandScoreModel> HandModel::GetScores() const
 		for (auto playerIndex : playerIndices)
 			scores[playerIndex] = (
 				playerIndex == score.leasterScore.primaryPlayerIndex &&
-				playerIndex == score.leasterScore.secondaryPlayerIndex ? 4 :
+				score.leasterScore.secondaryPlayerIndex == nullptr ? 4 :
 				playerIndex == score.leasterScore.primaryPlayerIndex ? 2 :
-				playerIndex == score.leasterScore.secondaryPlayerIndex ? 1 : -1);
+				score.leasterScore.secondaryPlayerIndex != nullptr &&
+				playerIndex == score.leasterScore.secondaryPlayerIndex.GetValue() ? 1 : -1);
 		break;
 	case HandType::Misplay:
 		for (auto playerIndex : playerIndices)

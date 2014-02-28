@@ -72,7 +72,7 @@ create table handLeasterScore
 (
 	handId int not null,
 	primaryPlayerId int not null,
-	secondaryPlayerId int not null,
+	secondaryPlayerId int null,
 	constraint pk_handLeasterScore primary key (handId),
 	constraint fk_handLeasterScore_handId foreign key (handId) references hand (id),
 	constraint fk_handLeasterScore_primaryPlayerId foreign key (primaryPlayerId) references player (id),

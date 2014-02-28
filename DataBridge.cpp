@@ -50,11 +50,17 @@ void CreateHand(SqlCommand& command, int gameId, const std::vector<int>& playerI
 			playerIds[hand.GetScore().normalScore.partnerPlayerIndex]);
 		break;
 	case HandType::Leaster:
-		command.Execute(
-			Commands::CreateHandLeasterScore,
-			handId,
-			playerIds[hand.GetScore().leasterScore.primaryPlayerIndex],
-			playerIds[hand.GetScore().leasterScore.secondaryPlayerIndex]);
+		{
+			Nullable<int> secondaryPlayerId;
+			auto secondaryPlayerIndex = hand.GetScore().leasterScore.secondaryPlayerIndex;
+			if (secondaryPlayerIndex != nullptr)
+				secondaryPlayerId = playerIds[secondaryPlayerIndex.GetValue()];
+			command.Execute(
+				Commands::CreateHandLeasterScore,
+				handId,
+				playerIds[hand.GetScore().leasterScore.primaryPlayerIndex],
+				secondaryPlayerId);
+		}
 		break;
 	case HandType::Misplay:
 		command.Execute(

@@ -1,6 +1,7 @@
 #pragma once
+#include "Nullable.h"
 
-union HandScore
+struct HandScore
 {
 	struct
 	{
@@ -12,7 +13,7 @@ union HandScore
 	struct
 	{
 		int primaryPlayerIndex;
-		int secondaryPlayerIndex;
+		Nullable<int> secondaryPlayerIndex;
 	} leasterScore;
 	struct
 	{
