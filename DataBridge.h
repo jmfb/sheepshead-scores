@@ -29,5 +29,8 @@ public:
 		const std::vector<std::string>& playerNames,
 		const std::string& since,
 		const std::string& until);
+	std::vector<PlayerScoreModel> GetScoresByDate(
+		const std::string& since,
+		const std::string& until);
 };
 

@@ -55,6 +55,8 @@ HttpResponse Controller::InternalExecute()
 				return SubmitHands({ request.GetJsonData().GetJson() });
 			else if (IsAction("get-games-by-date-for-players"))
 				return GetGamesByDateForPlayers({ request.GetJsonData().GetJson() });
+			else if (IsAction("get-scores-by-date"))
+				return GetScoresByDate(request.GetJsonData().GetJson()["period"].asString());
 			return SubmitScores(PlayerScoreModel::LoadAll(request.GetPostData()));
 		}
 		return Error("HTTP request method not supported.", 400);
@@ -237,4 +239,13 @@ HttpResponse Controller::GetGamesByDateForPlayers(
 		requestModel.GetPeriodStart(),
 		requestModel.GetPeriodEnd());
 	return Json::Content(games);
+}
+
+HttpResponse Controller::GetScoresByDate(const std::string& period)
+{
+	DataBridge dataBridge;
+	auto scores = dataBridge.GetScoresByDate(
+		Date::GetBeginningOfPeriod(period),
+		Date::GetEndOfPeriod(period));
+	return Json::Content(scores);
 }

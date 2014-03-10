@@ -140,6 +140,19 @@ namespace Commands
 		"order by game.playedWhen,\n"
 		"	game.id,\n"
 		"	player.name;\n";
+	const std::string GetScoresByDate =
+		"select	player.name,\n"
+		"	sum(gamePlayer.score) as score\n"
+		"from	game\n"
+		"	inner join gamePlayer\n"
+		"	on	gamePlayer.gameId = game.id\n"
+		"	inner join player\n"
+		"	on	player.id = gamePlayer.playerId\n"
+		"where	game.playedWhen >= {0}\n"
+		"and	game.playedWhen < {1}\n"
+		"group by player.name\n"
+		"order by sum(gamePlayer.score) desc,\n"
+		"	player.name asc;\n";
 	const std::string LoadGame =
 		"select	player.name,\n"
 		"	gamePlayer.score\n"

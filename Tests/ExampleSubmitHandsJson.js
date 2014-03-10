@@ -7,3 +7,6 @@ $.ajax({ url: '/sheepshead.cgi?action=get-games-by-date-for-players', type: "POS
 
 //Get Games By Date For Players (Period is a Month)
 $.ajax({ url: '/sheepshead.cgi?action=get-games-by-date-for-players', type: "POST", contentType: "application/json; charset=UTF-8", data: JSON.stringify({ playerNames: ["Jacob Buysse", "Greg Smith"], period: "2013-12"}), dataType: "json" })
+
+//Get Scores By Date (Period is a Month)
+$.ajax({ url: '/sheepshead.cgi?action=get-scores-by-date', type: "POST", contentType: "application/json; charset=UTF-8", data: JSON.stringify({ period: "2013-12"}), dataType: "json" })

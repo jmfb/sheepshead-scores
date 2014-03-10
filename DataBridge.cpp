@@ -224,3 +224,12 @@ std::vector<GameForPlayersModel> DataBridge::GetGamesByDateForPlayers(
 		models.push_back(currentModel);
 	return models;
 }
+
+std::vector<PlayerScoreModel> DataBridge::GetScoresByDate(
+	const std::string& since,
+	const std::string& until)
+{
+	SqlCommand command;
+	auto scores = command.Execute(Commands::GetScoresByDate, since, until);
+	return PlayerScoreModel::LoadAll(scores, 0, 1);
+}

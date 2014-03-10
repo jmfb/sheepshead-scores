@@ -30,4 +30,5 @@ private:
 	HttpResponse UploadScores(const FileUploadData& fileUpload);
 	HttpResponse DeleteGame(int gameId);
 	HttpResponse GetGamesByDateForPlayers(const GamesByDateForPlayersRequest& requestModel);
+	HttpResponse GetScoresByDate(const std::string& period);
 };
