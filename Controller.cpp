@@ -53,6 +53,8 @@ HttpResponse Controller::InternalExecute()
 				return DeleteGame(std::stoi(request.GetPostData()("gameId")));
 			else if (IsAction("submit-hands"))
 				return SubmitHands({ request.GetJsonData().GetJson() });
+			else if (IsAction("get-games-by-date-for-players"))
+				return GetGamesByDateForPlayers({ request.GetJsonData().GetJson() });
 			return SubmitScores(PlayerScoreModel::LoadAll(request.GetPostData()));
 		}
 		return Error("HTTP request method not supported.", 400);
@@ -226,3 +228,13 @@ HttpResponse Controller::DeleteGame(int gameId)
 	return Redirect("/sheepshead.cgi");
 }
 
+HttpResponse Controller::GetGamesByDateForPlayers(
+	const GamesByDateForPlayersRequest& requestModel)
+{
+	DataBridge dataBridge;
+	auto games = dataBridge.GetGamesByDateForPlayers(
+		requestModel.GetPlayerNames(),
+		requestModel.GetPeriodStart(),
+		requestModel.GetPeriodEnd());
+	return Json::Content(games);
+}

@@ -124,6 +124,22 @@ namespace Commands
 		"select	id\n"
 		"from	player\n"
 		"where	lower(name) = lower({0});\n";
+	const std::string GetGamesByDateForPlayers =
+		"select	game.id,\n"
+		"	game.playedWhen,\n"
+		"	player.name,\n"
+		"	gamePlayer.score\n"
+		"from	player\n"
+		"	inner join gamePlayer\n"
+		"	on	gamePlayer.playerId = player.id\n"
+		"	inner join game\n"
+		"	on	game.id = gamePlayer.gameId\n"
+		"where	player.name in ({0})\n"
+		"and	game.playedWhen >= {1}\n"
+		"and	game.playedWhen < {2}\n"
+		"order by game.playedWhen,\n"
+		"	game.id,\n"
+		"	player.name;\n";
 	const std::string LoadGame =
 		"select	player.name,\n"
 		"	gamePlayer.score\n"

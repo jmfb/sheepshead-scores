@@ -192,3 +192,35 @@ void DataBridge::DeleteGame(int gameId)
 	command.Commit();
 }
 
+std::vector<GameForPlayersModel> DataBridge::GetGamesByDateForPlayers(
+	const std::vector<std::string>& playerNames,
+	const std::string& since,
+	const std::string& until)
+{
+	SqlCommand command;
+	auto games = command.Execute(
+		Commands::GetGamesByDateForPlayers,
+		playerNames,
+		since,
+		until);
+	std::vector<GameForPlayersModel> models;
+	GameForPlayersModel currentModel;
+	for (auto game : games)
+	{
+		auto gameId = game[0].as<int>();
+		if (gameId != currentModel.GetGameId())
+		{
+			if (currentModel.GetGameId() != 0)
+			{
+				models.push_back(currentModel);
+				currentModel = {};
+			}
+			currentModel.SetGameId(gameId);
+			currentModel.SetPlayedWhen(game[1].as<std::string>());
+		}
+		currentModel.AddPlayerScore(PlayerScoreModel::Load(game, 2, 3));
+	}
+	if (currentModel.GetGameId() != 0)
+		models.push_back(currentModel);
+	return models;
+}

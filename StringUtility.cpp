@@ -1,6 +1,7 @@
 #include "StringUtility.h"
 #include <iterator>
 #include <algorithm>
+#include <sstream>
 
 namespace String
 {
@@ -27,6 +28,18 @@ std::vector<std::string> Split(const std::string& value, const std::string& sepa
 	if (result.empty())
 		result.push_back({});
 	return result;
+}
+
+std::string Join(const std::vector<std::string>& values, const std::string& separator)
+{
+	std::ostringstream out;
+	for (auto iterator = values.begin(); iterator != values.end(); ++iterator)
+	{
+		if (iterator != values.begin())
+			out << separator;
+		out << *iterator;
+	}
+	return out.str();
 }
 
 std::string Replace(const std::string& value, const std::string& find, const std::string& replace)

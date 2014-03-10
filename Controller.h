@@ -3,6 +3,7 @@
 #include "PlayerScoreModel.h"
 #include "HandsModel.h"
 #include "FileUploadData.h"
+#include "GamesByDateForPlayersRequest.h"
 #include <string>
 #include <vector>
 
@@ -28,5 +29,5 @@ private:
 	HttpResponse UploadScores();
 	HttpResponse UploadScores(const FileUploadData& fileUpload);
 	HttpResponse DeleteGame(int gameId);
+	HttpResponse GetGamesByDateForPlayers(const GamesByDateForPlayersRequest& requestModel);
 };
-

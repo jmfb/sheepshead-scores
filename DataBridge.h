@@ -5,6 +5,7 @@
 #include "PlayerScoreModel.h"
 #include "PlayerGameModel.h"
 #include "HandModel.h"
+#include "GameForPlayersModel.h"
 #include <string>
 #include <vector>
 
@@ -24,5 +25,9 @@ public:
 		const std::string& until);
 	ReportsModel FindGames(int skip, int take);
 	void DeleteGame(int gameId);
+	std::vector<GameForPlayersModel> GetGamesByDateForPlayers(
+		const std::vector<std::string>& playerNames,
+		const std::string& since,
+		const std::string& until);
 };
 
